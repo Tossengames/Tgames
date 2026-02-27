@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TPRO — Game Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #c0152a;
+  --red-bright: #ff1f3d;
+  --red-glow: #ff3355;
+  --red-dark: #7a0012;
+  --red-deep: #3d0009;
+  --bg: #0a0005;
+  --bg2: #120008;
+  --surface: rgba(120,5,25,0.15);
+  --text: #ffe0e6;
+  --text-dim: rgba(255,200,210,0.6);
+  --accent: #ff6688;
+  --white: #fff5f7;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* Custom Cursor */
+#cursor {
+  position: fixed;
+  width: 14px; height: 14px;
+  background: var(--red-bright);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: screen;
+  transition: transform 0.1s;
+  box-shadow: 0 0 15px var(--red-bright), 0 0 30px var(--red-glow);
+}
+#cursor-ring {
+  position: fixed;
+  width: 36px; height: 36px;
+  border: 1.5px solid var(--red-glow);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transition: left 0.12s ease, top 0.12s ease;
+  transform: translate(-50%, -50%);
+  opacity: 0.7;
+}
+
+/* Canvas */
+#bg-canvas {
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 60px;
+  background: linear-gradient(to bottom, rgba(10,0,5,0.95), transparent);
+  border-bottom: 1px solid rgba(192,21,42,0.2);
+}
+
+.nav-logo {
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  font-size: 1.8rem;
+  letter-spacing: 0.15em;
+  color: var(--white);
+  text-shadow: 0 0 20px var(--red-bright), 0 0 40px var(--red);
+  text-decoration: none;
+}
+.nav-logo span { color: var(--red-bright); }
+
+.nav-links { display: flex; gap: 40px; list-style: none; }
+.nav-links a {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.3s, text-shadow 0.3s;
+}
+.nav-links a:hover {
+  color: var(--red-bright);
+  text-shadow: 0 0 15px var(--red-bright);
+}
+
+/* HERO */
+#hero {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 20px;
+  perspective: 800px;
+}
+
+.hero-eyebrow {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--red-bright);
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: fadeUp 1s 0.3s forwards;
+}
+
+.hero-title {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(3.5rem, 10vw, 8rem);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  text-shadow: 0 0 40px var(--red), 0 0 80px rgba(192,21,42,0.4);
+  opacity: 0;
+  animation: fadeUp 1s 0.5s forwards;
+}
+
+.hero-title .highlight {
+  color: var(--red-bright);
+  text-shadow: 0 0 30px var(--red-bright), 0 0 60px var(--red-glow), 0 0 100px var(--red);
+  display: block;
+}
+
+.hero-sub {
+  margin-top: 28px;
+  font-size: 1.3rem;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  max-width: 560px;
+  opacity: 0;
+  animation: fadeUp 1s 0.7s forwards;
+}
+
+.hero-cta {
+  margin-top: 52px;
+  opacity: 0;
+  animation: fadeUp 1s 0.9s forwards;
+}
+
+.btn-primary {
+  display: inline-block;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  padding: 18px 52px;
+  background: transparent;
+  color: var(--red-bright);
+  border: 2px solid var(--red-bright);
+  text-decoration: none;
+  position: relative;
+  clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+  transition: all 0.3s;
+  cursor: none;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--red-bright);
+  clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.btn-primary:hover {
+  color: var(--bg);
+  box-shadow: 0 0 40px var(--red-bright), 0 0 80px rgba(255,31,61,0.4);
+}
+.btn-primary:hover::before { opacity: 1; }
+.btn-primary span { position: relative; z-index: 1; }
+
+/* 3D Scene HEX GRID */
+.hex-grid {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+/* SECTION */
+section {
+  position: relative;
+  z-index: 1;
+}
+
+.section-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.6em;
+  text-transform: uppercase;
+  color: var(--red-bright);
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 700;
+  color: var(--white);
+  text-shadow: 0 0 30px rgba(255,31,61,0.3);
+}
+
+/* GAMES SECTION */
+#games {
+  padding: 120px 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+#games .header {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+/* GAME CARD */
+.game-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid rgba(192,21,42,0.3);
+  clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 24px 100%, 0 calc(100% - 24px));
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s;
+  cursor: none;
+  overflow: hidden;
+  transform-style: preserve-3d;
+}
+
+.game-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(192,21,42,0.08) 0%, transparent 60%);
+  z-index: 0;
+}
+
+.game-card::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 24px; height: 24px;
+  background: var(--red-bright);
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  opacity: 0.6;
+}
+
+.game-card:hover {
+  transform: translateY(-12px) rotateX(5deg);
+  box-shadow: 0 30px 80px rgba(192,21,42,0.35), 0 0 0 1px rgba(255,31,61,0.5);
+  border-color: var(--red-bright);
+}
+
+.card-visual {
+  height: 220px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ninja card */
+.card-ninja { background: linear-gradient(135deg, #0d0010 0%, #1a0020 40%, #2a0015 100%); }
+.card-ninja-scene {
+  position: relative;
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Chicken card */
+.card-chicken { background: linear-gradient(135deg, #0a1a00 0%, #1a2e00 40%, #0d2200 100%); }
+
+/* Word card */
+.card-word { background: linear-gradient(135deg, #00101a 0%, #001a2e 40%, #00152a 100%); }
+
+.card-body {
+  padding: 28px 30px 32px;
+  position: relative;
+  z-index: 1;
+}
+
+.card-tag {
+  display: inline-block;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border: 1px solid rgba(255,31,61,0.4);
+  color: var(--red-bright);
+  margin-bottom: 14px;
+  clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+}
+
+.card-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 12px;
+  text-shadow: 0 0 20px rgba(255,31,61,0.3);
+}
+
+.card-desc {
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.card-free {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  color: #44ff88;
+  text-shadow: 0 0 10px #44ff88;
+  margin-bottom: 20px;
+}
+
+.card-btn {
+  display: inline-block;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 12px 28px;
+  background: var(--red);
+  color: var(--white);
+  border: none;
+  text-decoration: none;
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  transition: all 0.3s;
+  cursor: none;
+  position: relative;
+  overflow: hidden;
+}
+.card-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--red-bright);
+  transform: translateX(-100%);
+  transition: transform 0.3s;
+}
+.card-btn:hover::before { transform: translateX(0); }
+.card-btn span { position: relative; z-index: 1; }
+.card-btn:hover {
+  box-shadow: 0 0 30px rgba(255,31,61,0.6);
+}
+
+/* ABOUT SECTION */
+#about {
+  padding: 120px 60px;
+  border-top: 1px solid rgba(192,21,42,0.15);
+}
+
+.about-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 100px;
+  align-items: center;
+}
+
+.about-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-hex {
+  width: 260px; height: 260px;
+  position: relative;
+  animation: spin-slow 20s linear infinite;
+}
+
+.about-hex::before, .about-hex::after {
+  content: 'TP';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Orbitron', monospace;
+  font-size: 5rem;
+  font-weight: 900;
+  color: var(--red-bright);
+  text-shadow: 0 0 40px var(--red-bright);
+  border: 3px solid rgba(192,21,42,0.4);
+  border-radius: 50%;
+}
+.about-hex::after {
+  inset: 20px;
+  border: 1px solid rgba(255,31,61,0.2);
+  font-size: 0;
+  animation: counter-spin 15s linear infinite;
+  border-radius: 50%;
+  background: repeating-conic-gradient(rgba(192,21,42,0.05) 0deg, transparent 10deg, transparent 360deg);
+}
+
+.about-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 50px;
+}
+
+.stat-box {
+  background: var(--surface);
+  border: 1px solid rgba(192,21,42,0.25);
+  padding: 20px;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+
+.stat-num {
+  font-family: 'Orbitron', monospace;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--red-bright);
+  text-shadow: 0 0 20px var(--red-bright);
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.about-text p {
+  font-size: 1.1rem;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--text-dim);
+  margin-top: 24px;
+}
+
+/* FOOTER */
+footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid rgba(192,21,42,0.2);
+  padding: 40px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-logo {
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  font-size: 1.2rem;
+  color: var(--red-bright);
+  text-shadow: 0 0 15px var(--red-bright);
+}
+
+.footer-text {
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+/* SCAN LINE */
+.scanline {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--red-bright), transparent);
+  opacity: 0.4;
+  z-index: 50;
+  animation: scan 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* GRID OVERLAY */
+.grid-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(192,21,42,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(192,21,42,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* Ninja SVG illustration */
+.ninja-svg { width: 160px; height: 160px; filter: drop-shadow(0 0 20px rgba(255,31,61,0.6)); }
+.chicken-svg { width: 160px; height: 160px; filter: drop-shadow(0 0 20px rgba(100,255,50,0.5)); }
+.word-svg { width: 160px; height: 160px; filter: drop-shadow(0 0 20px rgba(50,150,255,0.6)); }
+
+/* GLOW ORBS */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(80px);
+  animation: orb-pulse 6s ease-in-out infinite;
+}
+.orb-1 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(120,5,25,0.35) 0%, transparent 70%);
+  top: -150px; left: -150px;
+  animation-delay: 0s;
+}
+.orb-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(192,21,42,0.2) 0%, transparent 70%);
+  bottom: 20%; right: -100px;
+  animation-delay: 3s;
+}
+.orb-3 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(255,31,61,0.15) 0%, transparent 70%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  animation-delay: 1.5s;
+}
+
+/* CORNER DECORATIONS */
+.corner {
+  position: fixed;
+  width: 60px; height: 60px;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.5;
+}
+.corner-tl { top: 20px; left: 20px;
+  border-top: 2px solid var(--red-bright); border-left: 2px solid var(--red-bright); }
+.corner-tr { top: 20px; right: 20px;
+  border-top: 2px solid var(--red-bright); border-right: 2px solid var(--red-bright); }
+.corner-bl { bottom: 20px; left: 20px;
+  border-bottom: 2px solid var(--red-bright); border-left: 2px solid var(--red-bright); }
+.corner-br { bottom: 20px; right: 20px;
+  border-bottom: 2px solid var(--red-bright); border-right: 2px solid var(--red-bright); }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scan {
+  0% { top: -2px; opacity: 0; }
+  10% { opacity: 0.4; }
+  90% { opacity: 0.4; }
+  100% { top: 100vh; opacity: 0; }
+}
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes counter-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+@keyframes orb-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.6; }
+  94% { opacity: 1; }
+  96% { opacity: 0.8; }
+  97% { opacity: 1; }
+}
+
+.float { animation: float 4s ease-in-out infinite; }
+.flicker { animation: flicker 5s ease-in-out infinite; }
+
+/* Particle dots on cards */
+.card-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.card-particle {
+  position: absolute;
+  width: 2px; height: 2px;
+  border-radius: 50%;
+  background: var(--red-bright);
+  opacity: 0;
+  animation: particle-rise 3s ease-in infinite;
+}
+
+@keyframes particle-rise {
+  0% { opacity: 0; transform: translateY(0) scale(0); }
+  20% { opacity: 0.8; }
+  100% { opacity: 0; transform: translateY(-100px) scale(1.5); }
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .games-grid { grid-template-columns: 1fr; max-width: 500px; margin: 0 auto; }
+  .about-inner { grid-template-columns: 1fr; gap: 60px; }
+  nav { padding: 20px 30px; }
+  #games, #about { padding: 80px 30px; }
+}
+@media (max-width: 600px) {
+  .nav-links { display: none; }
+  .hero-title { font-size: 3rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Fixed elements -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<div class="scanline"></div>
+<div class="grid-overlay"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div class="corner corner-tl"></div>
+<div class="corner corner-tr"></div>
+<div class="corner corner-bl"></div>
+<div class="corner corner-br"></div>
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo flicker">T<span>PRO</span></a>
+  <ul class="nav-links">
+    <li><a href="#games">Games</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#games">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-eyebrow">// INDEPENDENT GAME DEVELOPER //</div>
+  <h1 class="hero-title">
+    CRAFT YOUR
+    <span class="highlight">REALITY</span>
+  </h1>
+  <p class="hero-sub">Building immersive worlds, one pixel at a time. Three games. Infinite possibilities.</p>
+  <div class="hero-cta">
+    <a href="#games" class="btn-primary"><span>Explore Games</span></a>
+  </div>
+</section>
+
+<!-- GAMES -->
+<div id="games">
+  <div class="header">
+    <div class="section-label">// Game Library //</div>
+    <h2 class="section-title">Three Worlds. <span style="color:var(--red-bright)">All Free.</span></h2>
+  </div>
+
+  <div class="games-grid">
+
+    <!-- Card 1: Ninja Maker -->
+    <div class="game-card" onclick="window.location.href='ninja-maker.html'" onmousemove="tiltCard(event, this)" onmouseleave="resetCard(this)">
+      <div class="card-visual card-ninja">
+        <div class="card-particles" id="p1"></div>
+        <svg class="ninja-svg float" viewBox="0 0 160 160" fill="none">
+          <circle cx="80" cy="80" r="70" stroke="rgba(255,31,61,0.2)" stroke-width="1"/>
+          <circle cx="80" cy="80" r="50" stroke="rgba(255,31,61,0.15)" stroke-width="1" stroke-dasharray="4 6"/>
+          <!-- Ninja body -->
+          <rect x="60" y="85" width="40" height="35" rx="4" fill="#1a0020"/>
+          <rect x="58" y="83" width="44" height="10" rx="2" fill="#2d0035"/>
+          <!-- Ninja head -->
+          <circle cx="80" cy="68" r="22" fill="#1a0020"/>
+          <!-- Mask -->
+          <rect x="62" y="64" width="36" height="12" rx="6" fill="#c0152a"/>
+          <!-- Eyes -->
+          <rect x="71" y="67" width="8" height="5" rx="1" fill="white"/>
+          <rect x="81" y="67" width="8" height="5" rx="1" fill="white"/>
+          <circle cx="75" cy="69" r="2" fill="#1a0020"/>
+          <circle cx="85" cy="69" r="2" fill="#1a0020"/>
+          <!-- Katana -->
+          <line x1="98" y1="45" x2="140" y2="20" stroke="#ff6688" stroke-width="3" stroke-linecap="round"/>
+          <rect x="92" y="50" width="14" height="6" rx="1" fill="#3d0009" transform="rotate(-30 98 52)"/>
+          <!-- Stars floating -->
+          <polygon points="25,40 27,35 29,40 34,40 30,43 32,48 27,45 22,48 24,43 20,40" fill="rgba(255,31,61,0.7)"/>
+          <polygon points="130,90 131,87 132,90 135,90 133,92 134,95 131,93 128,95 129,92 127,90" fill="rgba(255,31,61,0.5)"/>
+          <!-- Glow line -->
+          <line x1="0" y1="115" x2="160" y2="115" stroke="rgba(255,31,61,0.2)" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-tag">Action / Creator</div>
+        <h3 class="card-title">Ninja Maker</h3>
+        <p class="card-desc">Build deadly stages, share them with the world, and challenge others. Design, play, repeat — the ultimate ninja stage creation experience.</p>
+        <div class="card-free">✦ FREE TO PLAY ✦</div>
+        <a href="ninja-maker.html" class="card-btn"><span>View Game →</span></a>
+      </div>
+    </div>
+
+    <!-- Card 2: Backyard Chickens -->
+    <div class="game-card" onclick="window.location.href='backyard-chickens.html'" onmousemove="tiltCard(event, this)" onmouseleave="resetCard(this)">
+      <div class="card-visual card-chicken">
+        <div class="card-particles" id="p2"></div>
+        <svg class="chicken-svg float" viewBox="0 0 160 160" fill="none" style="animation-delay:0.5s">
+          <!-- Sun -->
+          <circle cx="80" cy="40" r="20" fill="rgba(255,220,50,0.3)"/>
+          <circle cx="80" cy="40" r="14" fill="rgba(255,220,50,0.5)"/>
+          <line x1="80" y1="15" x2="80" y2="8" stroke="rgba(255,220,50,0.6)" stroke-width="2"/>
+          <line x1="80" y1="65" x2="80" y2="72" stroke="rgba(255,220,50,0.6)" stroke-width="2"/>
+          <line x1="55" y1="40" x2="48" y2="40" stroke="rgba(255,220,50,0.6)" stroke-width="2"/>
+          <line x1="105" y1="40" x2="112" y2="40" stroke="rgba(255,220,50,0.6)" stroke-width="2"/>
+          <!-- Ground -->
+          <ellipse cx="80" cy="140" rx="60" ry="10" fill="rgba(80,160,40,0.3)"/>
+          <!-- Chicken body -->
+          <ellipse cx="80" cy="108" rx="28" ry="22" fill="#f0e030"/>
+          <!-- Wing -->
+          <ellipse cx="64" cy="110" rx="14" ry="10" fill="#d4c020" transform="rotate(-15 64 110)"/>
+          <!-- Head -->
+          <circle cx="80" cy="84" r="16" fill="#f0e030"/>
+          <!-- Comb -->
+          <path d="M74 70 Q76 62 78 70 Q80 62 82 70 Q84 62 86 70" stroke="#ff4444" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <!-- Eye -->
+          <circle cx="83" cy="82" r="4" fill="white"/>
+          <circle cx="84" cy="82" r="2" fill="#333"/>
+          <!-- Beak -->
+          <polygon points="88,86 96,88 88,90" fill="#ffaa00"/>
+          <!-- Wattle -->
+          <ellipse cx="87" cy="92" rx="4" ry="5" fill="#ff4444"/>
+          <!-- Legs -->
+          <line x1="72" y1="128" x2="66" y2="144" stroke="#ffaa00" stroke-width="4" stroke-linecap="round"/>
+          <line x1="88" y1="128" x2="94" y2="144" stroke="#ffaa00" stroke-width="4" stroke-linecap="round"/>
+          <!-- Feet -->
+          <line x1="66" y1="144" x2="58" y2="148" stroke="#ffaa00" stroke-width="3" stroke-linecap="round"/>
+          <line x1="66" y1="144" x2="66" y2="150" stroke="#ffaa00" stroke-width="3" stroke-linecap="round"/>
+          <line x1="94" y1="144" x2="102" y2="148" stroke="#ffaa00" stroke-width="3" stroke-linecap="round"/>
+          <line x1="94" y1="144" x2="94" y2="150" stroke="#ffaa00" stroke-width="3" stroke-linecap="round"/>
+          <!-- Egg -->
+          <ellipse cx="28" cy="128" rx="10" ry="12" fill="rgba(255,240,200,0.8)"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-tag">Simulation / Casual</div>
+        <h3 class="card-title">Backyard Chickens Simulator</h3>
+        <p class="card-desc">Raise your flock, harvest eggs, expand your farm, and live the peaceful backyard farming life you always dreamed of.</p>
+        <div class="card-free">✦ FREE TO PLAY ✦</div>
+        <a href="backyard-chickens.html" class="card-btn"><span>View Game →</span></a>
+      </div>
+    </div>
+
+    <!-- Card 3: Word Rings -->
+    <div class="game-card" onclick="window.location.href='word-rings.html'" onmousemove="tiltCard(event, this)" onmouseleave="resetCard(this)">
+      <div class="card-visual card-word">
+        <div class="card-particles" id="p3"></div>
+        <svg class="word-svg float" viewBox="0 0 160 160" fill="none" style="animation-delay:1s">
+          <!-- Rings -->
+          <circle cx="80" cy="80" r="60" stroke="rgba(50,150,255,0.4)" stroke-width="3" stroke-dasharray="8 4"/>
+          <circle cx="80" cy="80" r="42" stroke="rgba(100,200,255,0.5)" stroke-width="3" stroke-dasharray="6 4"/>
+          <circle cx="80" cy="80" r="24" stroke="rgba(150,230,255,0.6)" stroke-width="3" stroke-dasharray="4 4"/>
+          <circle cx="80" cy="80" r="8" fill="rgba(100,200,255,0.8)"/>
+          <!-- Letters on rings -->
+          <text x="80" y="22" text-anchor="middle" fill="rgba(150,230,255,0.9)" font-family="monospace" font-size="11" font-weight="bold">W</text>
+          <text x="130" y="82" text-anchor="middle" fill="rgba(150,230,255,0.9)" font-family="monospace" font-size="11" font-weight="bold">O</text>
+          <text x="80" y="142" text-anchor="middle" fill="rgba(150,230,255,0.9)" font-family="monospace" font-size="11" font-weight="bold">R</text>
+          <text x="30" y="82" text-anchor="middle" fill="rgba(150,230,255,0.9)" font-family="monospace" font-size="11" font-weight="bold">D</text>
+          <!-- Middle ring letters -->
+          <text x="80" y="40" text-anchor="middle" fill="rgba(100,200,255,0.9)" font-family="monospace" font-size="10" font-weight="bold">A</text>
+          <text x="120" y="82" text-anchor="middle" fill="rgba(100,200,255,0.9)" font-family="monospace" font-size="10" font-weight="bold">P</text>
+          <text x="80" y="124" text-anchor="middle" fill="rgba(100,200,255,0.9)" font-family="monospace" font-size="10" font-weight="bold">L</text>
+          <text x="40" y="82" text-anchor="middle" fill="rgba(100,200,255,0.9)" font-family="monospace" font-size="10" font-weight="bold">E</text>
+          <!-- Inner ring letters -->
+          <text x="80" y="60" text-anchor="middle" fill="white" font-family="monospace" font-size="9" font-weight="bold">R</text>
+          <text x="100" y="82" text-anchor="middle" fill="white" font-family="monospace" font-size="9" font-weight="bold">I</text>
+          <text x="80" y="104" text-anchor="middle" fill="white" font-family="monospace" font-size="9" font-weight="bold">N</text>
+          <text x="60" y="82" text-anchor="middle" fill="white" font-family="monospace" font-size="9" font-weight="bold">G</text>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-tag">Puzzle / Word</div>
+        <h3 class="card-title">Word Rings</h3>
+        <p class="card-desc">Spin the rings to align letters and form words. A uniquely satisfying puzzle mechanic unlike anything you've played before.</p>
+        <div class="card-free">✦ FREE TO PLAY ✦</div>
+        <a href="word-rings.html" class="card-btn"><span>View Game →</span></a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner">
+    <div class="about-visual">
+      <div>
+        <div class="about-hex"></div>
+        <div class="about-stats">
+          <div class="stat-box">
+            <div class="stat-num">3</div>
+            <div class="stat-label">Games Released</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">100%</div>
+            <div class="stat-label">Free to Play</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">∞</div>
+            <div class="stat-label">Community Stages</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">solo</div>
+            <div class="stat-label">Indie Developer</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="about-text">
+      <div class="section-label">// About TPRO //</div>
+      <h2 class="section-title">Independent.<br>Passionate.<br><span style="color:var(--red-bright)">Building.</span></h2>
+      <p>TPRO is an indie game developer driven by one mission — create experiences that players genuinely love. No subscriptions, no paywalls, no tricks. Just fun, well-crafted games available to everyone.</p>
+      <p style="margin-top:16px">From ninja stage creation to peaceful chicken farming to brain-bending word puzzles — every game is built with care and shared with the world for free.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">TPRO</div>
+  <div class="footer-text">© 2025 TPRO Games — All games free forever</div>
+  <div class="footer-text">Indie Dev</div>
+</footer>
+
+<script>
+// Custom cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx = 0, my = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = (mx - 7) + 'px';
+  cursor.style.top = (my - 7) + 'px';
+  ring.style.left = mx + 'px';
+  ring.style.top = my + 'px';
+});
+
+document.addEventListener('mousedown', () => {
+  cursor.style.transform = 'scale(2)';
+  ring.style.transform = 'translate(-50%,-50%) scale(0.7)';
+});
+document.addEventListener('mouseup', () => {
+  cursor.style.transform = 'scale(1)';
+  ring.style.transform = 'translate(-50%,-50%) scale(1)';
+});
+
+// 3D Tilt
+function tiltCard(e, card) {
+  const rect = card.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const cx = rect.width / 2;
+  const cy = rect.height / 2;
+  const rotX = (y - cy) / cy * -10;
+  const rotY = (x - cx) / cx * 10;
+  card.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-8px)`;
+}
+function resetCard(card) {
+  card.style.transform = '';
+}
+
+// Canvas BG — floating particles
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const particles = Array.from({length: 80}, () => ({
+  x: Math.random() * window.innerWidth,
+  y: Math.random() * window.innerHeight,
+  vx: (Math.random() - 0.5) * 0.3,
+  vy: -Math.random() * 0.5 - 0.1,
+  size: Math.random() * 2 + 0.5,
+  opacity: Math.random() * 0.5 + 0.1,
+  hue: Math.random() > 0.8 ? 180 : 350
+}));
+
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    if (p.y < -10) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
+    if (p.x < 0) p.x = canvas.width;
+    if (p.x > canvas.width) p.x = 0;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fillStyle = `hsla(${p.hue}, 80%, 65%, ${p.opacity})`;
+    ctx.fill();
+  });
+
+  // Draw connections
+  particles.forEach((p, i) => {
+    particles.slice(i + 1).forEach(p2 => {
+      const dx = p.x - p2.x, dy = p.y - p2.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 100) {
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.strokeStyle = `rgba(192,21,42,${0.08 * (1 - dist/100)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    });
+  });
+
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+// Card particles
+function spawnCardParticles() {
+  ['p1','p2','p3'].forEach((id, i) => {
+    const cont = document.getElementById(id);
+    if (!cont) return;
+    const colors = ['rgba(255,31,61,0.8)', 'rgba(100,255,50,0.8)', 'rgba(50,150,255,0.8)'];
+    const dot = document.createElement('div');
+    dot.className = 'card-particle';
+    dot.style.cssText = `
+      left:${Math.random()*100}%;
+      bottom:0;
+      background:${colors[i]};
+      animation-delay:${Math.random()*3}s;
+      animation-duration:${2+Math.random()*2}s;
+    `;
+    cont.appendChild(dot);
+    setTimeout(() => dot.remove(), 5000);
+  });
+}
+setInterval(spawnCardParticles, 300);
+</script>
+</body>
+</html>
