@@ -4,7 +4,255 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Backyard Chickens Simulator — TPRO Games</title>
+<link href="<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backyard Chickens Simulator — TPRO</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--yellow:#ffd700;--orange:#ff8c00;--green:#4caf50;--green-light:#7bc67e;--green-dark:#2e7d32;--sky:#87ceeb;--bg:#e8f5e9;--cream:#fffde7;--white:#ffffff;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{background:var(--bg);color:#333;font-family:'Nunito',sans-serif;overflow-x:hidden;cursor:none;}
+#cursor{position:fixed;width:18px;height:18px;background:var(--orange);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);box-shadow:0 0 12px var(--yellow);transition:transform .15s;}
+#cursor-ring{position:fixed;width:36px;height:36px;border:2px solid var(--green);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .1s,top .1s;opacity:.8;}
+#canvas3d{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 50px;background:rgba(255,253,231,.95);border-bottom:3px solid var(--green-light);backdrop-filter:blur(10px);box-shadow:0 2px 16px rgba(0,0,0,.07);}
+.nav-logo{font-family:'Fredoka One',cursive;font-size:1.5rem;color:var(--green-dark);text-decoration:none;}
+.nav-logo span{color:var(--orange);}
+.nav-back{font-family:'Nunito',sans-serif;font-weight:700;font-size:.85rem;letter-spacing:.1em;text-transform:uppercase;color:var(--green-dark);text-decoration:none;transition:color .3s;cursor:none;}
+.nav-back:hover{color:var(--orange);}
+
+/* HERO */
+.hero{position:relative;z-index:1;min-height:100vh;background:linear-gradient(180deg,#87ceeb 0%,#b8e4f7 30%,#c8f0c8 65%,#a5d6a7 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 24px 60px;overflow:hidden;}
+.cloud{position:absolute;background:rgba(255,255,255,.85);border-radius:50px;}
+.cloud-1{width:120px;height:40px;top:14%;left:9%;animation:cloud-float 8s ease-in-out infinite;}
+.cloud-1::before{content:'';position:absolute;width:62px;height:62px;background:rgba(255,255,255,.85);border-radius:50%;top:-24px;left:20px;}
+.cloud-2{width:90px;height:32px;top:20%;right:12%;animation:cloud-float 11s ease-in-out infinite reverse;}
+.cloud-2::before{content:'';position:absolute;width:48px;height:48px;background:rgba(255,255,255,.85);border-radius:50%;top:-19px;left:16px;}
+.cloud-3{width:100px;height:34px;top:8%;right:32%;animation:cloud-float 7s ease-in-out 2s infinite;}
+.cloud-3::before{content:'';position:absolute;width:50px;height:50px;background:rgba(255,255,255,.85);border-radius:50%;top:-20px;left:18px;}
+.sun{position:absolute;top:8%;left:7%;width:76px;height:76px;background:radial-gradient(circle,#fffaaa,#ffd700);border-radius:50%;box-shadow:0 0 30px rgba(255,215,0,.55),0 0 60px rgba(255,215,0,.25);animation:sun-pulse 4s ease-in-out infinite;}
+.ground{position:absolute;bottom:0;left:0;right:0;height:170px;background:linear-gradient(to bottom,#66bb6a,#4caf50);border-top:4px solid #81c784;border-radius:50% 50% 0 0/28px 28px 0 0;}
+.fence{position:absolute;bottom:144px;left:4%;right:4%;height:55px;overflow:hidden;}
+.fence-rail{position:absolute;left:0;right:0;height:7px;background:#a0522d;border-radius:4px;}
+.fence-rail-1{top:8px;}.fence-rail-2{top:26px;}
+.fence-posts{display:flex;gap:32px;align-items:flex-end;height:100%;}
+.fpost{width:11px;height:48px;background:#8d5524;border-radius:2px;flex-shrink:0;}
+
+/* floating icons */
+.fi{position:absolute;pointer-events:none;z-index:2;font-size:1.5rem;animation:float-item 6s ease-in-out infinite;opacity:.75;}
+
+.hero-content{position:relative;z-index:2;}
+.hero-badge{display:inline-block;background:var(--green-dark);color:#fff;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;padding:8px 22px;border-radius:999px;margin-bottom:18px;opacity:0;animation:popIn .6s .3s forwards;}
+.hero-title{font-family:'Fredoka One',cursive;font-size:clamp(2.8rem,8vw,6.5rem);line-height:1.05;color:var(--green-dark);text-shadow:3px 4px 0 rgba(0,0,0,.12);opacity:0;animation:popIn .8s .5s forwards;}
+.hero-title .orange{color:var(--orange);}
+.hero-sub{margin-top:18px;font-size:1.15rem;font-weight:600;color:var(--green-dark);opacity:.85;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.55;opacity:0;animation:popIn .6s .7s forwards;}
+.hero-free{margin-top:12px;font-family:'Fredoka One',cursive;font-size:1.05rem;color:var(--green-dark);background:var(--yellow);display:inline-block;padding:6px 20px;border-radius:999px;opacity:0;animation:popIn .6s .8s forwards;}
+.hero-btns{display:flex;gap:14px;margin-top:32px;flex-wrap:wrap;justify-content:center;opacity:0;animation:popIn .6s .9s forwards;}
+
+/* HERO IMAGE — add screenshot here */
+.hero-screenshot-wrap{width:100%;max-width:800px;margin:0 auto 40px;opacity:0;animation:popIn .8s .2s forwards;}
+.hero-screenshot-wrap img{width:100%;height:auto;display:block;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.15);}
+.hero-screenshot-placeholder{background:rgba(255,255,255,.4);border-radius:16px;padding:40px 20px;display:flex;align-items:center;justify-content:center;border:2px dashed rgba(76,175,80,.4);}
+
+.btn-play{font-family:'Fredoka One',cursive;font-size:1.1rem;letter-spacing:.05em;padding:18px 52px;background:var(--orange);color:#fff;border:none;border-radius:12px;text-decoration:none;cursor:none;box-shadow:0 6px 0 #cc6600,0 8px 20px rgba(255,140,0,.35);transition:transform .2s,box-shadow .2s;position:relative;display:inline-block;}
+.btn-play:hover{transform:translateY(-3px);box-shadow:0 9px 0 #cc6600,0 12px 30px rgba(255,140,0,.45);}
+.btn-secondary{font-family:'Fredoka One',cursive;font-size:1.05rem;padding:16px 34px;background:var(--white);color:var(--green-dark);border:3px solid var(--green);border-radius:12px;text-decoration:none;cursor:none;box-shadow:0 5px 0 var(--green-dark);transition:transform .2s;display:inline-block;}
+.btn-secondary:hover{transform:translateY(-3px);}
+
+/* FEATURES */
+.features{position:relative;z-index:1;padding:90px 60px;background:var(--cream);}
+.sec-title{font-family:'Fredoka One',cursive;font-size:clamp(2rem,4vw,3rem);color:var(--green-dark);text-align:center;margin-bottom:56px;}
+.sec-title span{color:var(--orange);}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;max-width:1200px;margin:0 auto;}
+.feat-card{background:var(--white);border-radius:18px;padding:34px 26px;border:3px solid transparent;box-shadow:0 6px 24px rgba(0,0,0,.07);transition:transform .3s,box-shadow .3s,border-color .3s;}
+.feat-card:hover{transform:translateY(-7px);box-shadow:0 18px 44px rgba(0,0,0,.11);border-color:var(--green-light);}
+.feat-icon{font-size:2.8rem;margin-bottom:16px;display:block;}
+.feat-title{font-family:'Fredoka One',cursive;font-size:1.25rem;color:var(--green-dark);margin-bottom:8px;}
+.feat-desc{font-size:.92rem;color:#666;line-height:1.65;font-weight:600;}
+
+/* SCREENSHOTS */
+.screenshots{position:relative;z-index:1;padding:0 60px 90px;background:var(--cream);}
+.ss-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1200px;margin:0 auto;}
+.ss-item{aspect-ratio:16/9;background:rgba(76,175,80,.08);border:2px dashed rgba(76,175,80,.3);border-radius:12px;overflow:hidden;transition:transform .3s;display:flex;align-items:center;justify-content:center;}
+.ss-item:hover{transform:scale(1.02);}
+.ss-img{width:100%;height:100%;object-fit:cover;border-radius:10px;}
+.ss-placeholder{font-family:'Fredoka One',cursive;font-size:.85rem;color:rgba(46,125,50,.45);}
+
+/* BREEDS */
+.breeds{position:relative;z-index:1;padding:80px 60px;background:linear-gradient(180deg,#e8f5e9,#f1f8e9);}
+.breeds-inner{max-width:1200px;margin:0 auto;}
+.breeds-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:48px;}
+.breed-card{background:var(--white);border-radius:18px;padding:26px 18px;text-align:center;border:3px solid var(--green-light);box-shadow:0 5px 18px rgba(0,0,0,.06);transition:transform .3s;}
+.breed-card:hover{transform:translateY(-5px) rotate(-1deg);}
+.breed-icon{font-size:3rem;margin-bottom:10px;display:block;animation:float-bob 3s ease-in-out infinite;}
+.breed-name{font-family:'Fredoka One',cursive;font-size:1rem;color:var(--green-dark);}
+.breed-desc{font-size:.82rem;color:#888;margin-top:5px;font-weight:600;}
+.breed-rarity{font-family:'Fredoka One',cursive;font-size:.72rem;padding:4px 12px;border-radius:999px;margin-top:8px;display:inline-block;}
+.r-common{background:#e8f5e9;color:var(--green-dark);}
+.r-rare{background:#fff3e0;color:var(--orange);}
+.r-epic{background:#f3e5f5;color:#7b1fa2;}
+.r-legendary{background:#fff9c4;color:#f57f17;}
+
+/* CTA */
+.cta-bottom{position:relative;z-index:1;text-align:center;padding:90px 40px;background:linear-gradient(180deg,#a5d6a7,#66bb6a);}
+.cta-title{font-family:'Fredoka One',cursive;font-size:clamp(2.5rem,5vw,4rem);color:#fff;text-shadow:3px 4px 0 rgba(0,0,0,.12);margin-bottom:16px;}
+.cta-sub{font-size:1.1rem;font-weight:700;color:rgba(255,255,255,.85);max-width:480px;margin:0 auto 32px;line-height:1.6;}
+
+footer{position:relative;z-index:1;background:var(--green-dark);padding:26px 50px;display:flex;align-items:center;justify-content:space-between;}
+.footer-logo{font-family:'Fredoka One',cursive;font-size:1.1rem;color:var(--yellow);text-decoration:none;}
+.footer-text{font-size:.78rem;color:rgba(255,255,255,.65);font-weight:700;text-transform:uppercase;letter-spacing:.1em;}
+footer a{color:rgba(255,255,255,.6);text-decoration:none;font-size:.85rem;font-weight:700;transition:color .3s;cursor:none;}
+footer a:hover{color:var(--yellow);}
+
+/* MODAL */
+#play-modal{position:fixed;inset:0;z-index:1000;background:rgba(20,50,10,.92);backdrop-filter:blur(18px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
+#play-modal.open{opacity:1;pointer-events:all;}
+.modal-box{background:var(--cream);border:3px solid var(--green);border-radius:24px;padding:52px 48px;text-align:center;max-width:420px;width:90%;box-shadow:0 0 60px rgba(76,175,80,.3);transform:scale(.92);transition:transform .3s;}
+#play-modal.open .modal-box{transform:scale(1);}
+.modal-icon{font-size:3.5rem;margin-bottom:16px;display:block;}
+.modal-title{font-family:'Fredoka One',cursive;font-size:1.5rem;color:var(--green-dark);margin-bottom:10px;}
+.modal-sub{font-size:1rem;color:#666;line-height:1.65;margin-bottom:28px;font-weight:600;}
+.modal-close{font-family:'Fredoka One',cursive;font-size:1rem;padding:14px 40px;background:var(--orange);color:#fff;border:none;border-radius:10px;cursor:pointer;box-shadow:0 5px 0 #cc6600;transition:transform .2s;}
+.modal-close:hover{transform:translateY(-2px);}
+
+@keyframes popIn{from{opacity:0;transform:scale(.85) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes cloud-float{0%,100%{transform:translateX(0)}50%{transform:translateX(18px)}}
+@keyframes sun-pulse{0%,100%{box-shadow:0 0 30px rgba(255,215,0,.55),0 0 60px rgba(255,215,0,.25)}50%{box-shadow:0 0 50px rgba(255,215,0,.75),0 0 100px rgba(255,215,0,.4)}}
+@keyframes float-item{0%,100%{transform:translateY(0) rotate(0deg);opacity:.75}50%{transform:translateY(-14px) rotate(8deg);opacity:1}}
+@keyframes float-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+
+@media(max-width:900px){.feat-grid,.breeds-grid,.ss-grid{grid-template-columns:repeat(2,1fr);}nav,.features,.screenshots,.breeds,footer{padding-left:24px;padding-right:24px;}}
+@media(max-width:600px){.feat-grid,.breeds-grid,.ss-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div id="cursor"></div><div id="cursor-ring"></div>
+<canvas id="canvas3d"></canvas>
+
+<!-- MODAL -->
+<div id="play-modal" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <span class="modal-icon">🐔</span>
+    <h2 class="modal-title">Backyard Chickens</h2>
+    <p class="modal-sub">Your flock is waiting! The game will launch here in the final build.</p>
+    <button class="modal-close" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<nav>
+  <a href="index.html" class="nav-logo">T<span>PRO</span></a>
+  <a href="index.html" class="nav-back">← All Projects</a>
+</nav>
+
+<section class="hero">
+  <div class="sun"></div>
+  <div class="cloud cloud-1"></div><div class="cloud cloud-2"></div><div class="cloud cloud-3"></div>
+  <div class="fi" style="top:30%;left:7%;animation-delay:0s">🌻</div>
+  <div class="fi" style="top:25%;right:9%;animation-delay:1.2s">🌾</div>
+  <div class="fi" style="top:45%;left:4%;animation-delay:2.2s">🥚</div>
+  <div class="fi" style="top:35%;right:5%;animation-delay:3s">🌿</div>
+  <div class="ground"></div>
+  <div class="fence">
+    <div class="fence-rail fence-rail-1"></div>
+    <div class="fence-rail fence-rail-2"></div>
+    <div class="fence-posts">
+      <div class="fpost"></div><div class="fpost"></div><div class="fpost"></div>
+      <div class="fpost"></div><div class="fpost"></div><div class="fpost"></div>
+      <div class="fpost"></div><div class="fpost"></div><div class="fpost"></div>
+      <div class="fpost"></div><div class="fpost"></div><div class="fpost"></div>
+      <div class="fpost"></div><div class="fpost"></div><div class="fpost"></div>
+      <div class="fpost"></div><div class="fpost"></div><div class="fpost"></div>
+    </div>
+  </div>
+
+  <div class="hero-content">
+    <!-- HERO IMAGE — add screenshot: <img src="images/chickens-hero.jpg" alt="Backyard Chickens gameplay"> -->
+    <div class="hero-screenshot-wrap">
+      <!-- <img src="images/chickens-hero.jpg" alt="Backyard Chickens gameplay"> -->
+      <div class="hero-screenshot-placeholder">
+        <div style="font-family:'Fredoka One',cursive;color:rgba(46,125,50,.5);font-size:1rem">🐔 Screenshot coming soon 🥚</div>
+      </div>
+    </div>
+
+    <div class="hero-badge">🐔 Simulation · Farming · Casual</div>
+    <h1 class="hero-title">BACKYARD<br><span class="orange">CHICKENS</span><br>SIMULATOR</h1>
+    <p class="hero-sub">Raise your flock, collect eggs, discover rare breeds, and build the backyard farm of your dreams.</p>
+    <div class="hero-free">🌟 Free to Play — No Ads 🌟</div>
+    <div class="hero-btns">
+      <a href="javascript:void(0)" class="btn-play" onclick="openModal()">🐔 Play Game</a>
+      <a href="#features" class="btn-secondary">Learn More 🌻</a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <h2 class="sec-title">Everything you <span>love</span> about farming 🌾</h2>
+  <div class="feat-grid">
+    <div class="feat-card"><span class="feat-icon">🐣</span><div class="feat-title">Hatch & Raise</div><div class="feat-desc">Start with chicks and raise them into happy, egg-laying hens. Watch them grow through every life stage.</div></div>
+    <div class="feat-card"><span class="feat-icon">🥚</span><div class="feat-title">Collect Eggs</div><div class="feat-desc">Gather eggs each morning. Different breeds lay different coloured eggs — white, brown, speckled, even blue.</div></div>
+    <div class="feat-card"><span class="feat-icon">🏡</span><div class="feat-title">Build Your Coop</div><div class="feat-desc">Upgrade from a starter coop to a full backyard paradise. Expand, decorate, and make it yours.</div></div>
+    <div class="feat-card"><span class="feat-icon">🌽</span><div class="feat-title">Feed & Care</div><div class="feat-desc">Keep your chickens happy with the right food and fresh water. Happy hens lay better eggs.</div></div>
+    <div class="feat-card"><span class="feat-icon">🦆</span><div class="feat-title">Unlock Rare Breeds</div><div class="feat-desc">Discover over 20 unique breeds. From fluffy Silkies to colourful Polish chickens — collect them all.</div></div>
+    <div class="feat-card"><span class="feat-icon">🌸</span><div class="feat-title">Seasons & Events</div><div class="feat-desc">The farm changes every season. Spring hatching, summer harvest, autumn fairs, cosy winter care.</div></div>
+  </div>
+</section>
+
+<!-- SCREENSHOTS -->
+<section class="screenshots">
+  <div class="ss-grid">
+    <div class="ss-item"><!-- <img class="ss-img" src="images/chicken-ss1.jpg"> --> <div class="ss-placeholder">🐔 Coop View</div></div>
+    <div class="ss-item"><!-- <img class="ss-img" src="images/chicken-ss2.jpg"> --> <div class="ss-placeholder">🥚 Egg Collecting</div></div>
+    <div class="ss-item"><!-- <img class="ss-img" src="images/chicken-ss3.jpg"> --> <div class="ss-placeholder">🌻 Farm Upgrade</div></div>
+  </div>
+</section>
+
+<!-- BREEDS -->
+<section class="breeds">
+  <div class="breeds-inner">
+    <h2 class="sec-title" style="text-align:center">Meet your <span>flock</span> 🐔</h2>
+    <div class="breeds-grid">
+      <div class="breed-card"><span class="breed-icon">🐓</span><div class="breed-name">Rhode Island Red</div><div class="breed-desc">Classic egg layer. Reliable and friendly.</div><span class="breed-rarity r-common">Common</span></div>
+      <div class="breed-card"><span class="breed-icon">🦃</span><div class="breed-name">Silkie</div><div class="breed-desc">Fluffy and gentle. Cream eggs.</div><span class="breed-rarity r-rare">Rare</span></div>
+      <div class="breed-card"><span class="breed-icon">🐦</span><div class="breed-name">Araucana</div><div class="breed-desc">Lays beautiful blue-green eggs.</div><span class="breed-rarity r-epic">Epic</span></div>
+      <div class="breed-card"><span class="breed-icon">⭐</span><div class="breed-name">Golden Comet</div><div class="breed-desc">Ultra rare. Golden shimmer eggs weekly.</div><span class="breed-rarity r-legendary">Legendary</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-bottom">
+  <h2 class="cta-title">Your flock is waiting! 🐣</h2>
+  <p class="cta-sub">Free to play. No ads, no tricks. Just chickens and chill farming fun.</p>
+  <a href="javascript:void(0)" class="btn-play" onclick="openModal()" style="font-size:1.1rem;padding:20px 58px">🐔 Play for Free</a>
+</section>
+
+<footer>
+  <a href="index.html" class="footer-logo">TPRO</a>
+  <div class="footer-text">Backyard Chickens — Free</div>
+  <a href="index.html">← All Projects</a>
+</footer>
+
+<script>
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';});
+function openModal(){document.getElementById('play-modal').classList.add('open');}
+function closeModal(){document.getElementById('play-modal').classList.remove('open');}
+document.getElementById('play-modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+const canvas=document.getElementById('canvas3d'),ctx=canvas.getContext('2d');
+canvas.width=innerWidth;canvas.height=innerHeight;
+window.addEventListener('resize',()=>{canvas.width=innerWidth;canvas.height=innerHeight;});
+const leaves=Array.from({length:22},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.7,vy:-Math.random()*.35-.1,rot:Math.random()*360,rs:(Math.random()-.5)*1.5,sz:Math.random()*10+5,op:Math.random()*.22+.04,hue:Math.random()*50+90}));
+function anim(){ctx.clearRect(0,0,canvas.width,canvas.height);leaves.forEach(l=>{l.x+=l.vx;l.y+=l.vy;l.rot+=l.rs;if(l.y<-20){l.y=canvas.height+20;l.x=Math.random()*canvas.width;}ctx.save();ctx.translate(l.x,l.y);ctx.rotate(l.rot*Math.PI/180);ctx.beginPath();ctx.ellipse(0,0,l.sz,l.sz*.55,0,0,Math.PI*2);ctx.fillStyle=`hsla(${l.hue},60%,48%,${l.op})`;ctx.fill();ctx.restore();});requestAnimationFrame(anim);}
+anim();
+</script>
+</body>
+</html>
+" rel="stylesheet">
 <style>
 :root {
   --yellow: #ffd700;
