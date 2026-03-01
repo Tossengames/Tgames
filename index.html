@@ -482,4 +482,12 @@ function draw(){
     ctx.fillStyle=`hsla(${p.hue},70%,60%,${p.op})`;ctx.fill();
   });
   pts.forEach((p,i)=>pts.slice(i+1).forEach(p2=>{
-    const d=Math.hypot(p.x-p2.x,p.y-p
+    const d=Math.hypot(p.x-p2.x,p.y-p2.y);
+    if(d<100){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p2.x,p2.y);ctx.strokeStyle=`rgba(255,255,255,${.03*(1-d/100)})`;ctx.lineWidth=.4;ctx.stroke();}
+  }));
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+</body>
+</html>
