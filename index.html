@@ -481,5 +481,5 @@ function draw(){
     ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
     ctx.fillStyle=`hsla(${p.hue},70%,60%,${p.op})`;ctx.fill();
   });
-  pts.forEach((p,i)=>pts.slice(i+1).forEach(p2=>{
+  {
     const d=Math.hypot(p.x-p2.x,p.y-p
