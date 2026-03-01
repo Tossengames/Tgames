@@ -459,8 +459,8 @@ function spawnIcon(){
   floatLayer.appendChild(el);
   el.addEventListener('animationend',()=>el.remove());
 }
-setInterval(spawnIcon,900);
-for(let i=0;i<10;i++) setTimeout(spawnIcon, i*300);
+setInterval(spawnIcon,3500);
+for(let i=0;i<4;i++) setTimeout(spawnIcon, i*800);
 
 // BG CANVAS
 const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');
