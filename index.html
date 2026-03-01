@@ -162,18 +162,6 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:28
 .footer-credit a{color:rgba(212,32,56,0.7);text-decoration:none;transition:color 0.3s;cursor:pointer;}
 .footer-credit a:hover{color:var(--accent);}
 
-/* MODAL */
-#play-modal{position:fixed;inset:0;z-index:1000;background:rgba(7,6,15,0.94);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;}
-#play-modal.open{opacity:1;pointer-events:all;}
-.modal-box{background:rgba(12,10,24,0.98);border:1px solid var(--border-accent);padding:52px 48px;text-align:center;max-width:420px;width:90%;box-shadow:0 0 80px rgba(212,32,56,0.18);transform:scale(0.92) translateY(10px);transition:transform 0.3s;}
-#play-modal.open .modal-box{transform:scale(1) translateY(0);}
-.modal-icon{font-size:2.8rem;margin-bottom:16px;display:block;}
-.modal-title{font-family:'Orbitron',monospace;font-size:1.2rem;font-weight:900;color:var(--white);margin-bottom:10px;}
-.modal-sub{font-size:0.97rem;font-weight:300;color:var(--text-dim);line-height:1.65;margin-bottom:28px;}
-.modal-game{color:var(--accent);font-weight:600;}
-.modal-close{font-family:'Orbitron',monospace;font-size:0.68rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;padding:13px 38px;background:transparent;color:var(--accent);border:1px solid var(--border-accent);cursor:pointer;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);transition:all 0.3s;}
-.modal-close:hover{background:var(--accent);color:#fff;}
-
 @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:1100px){.cards-grid{grid-template-columns:1fr 1fr;}.about-inner,.contact-inner{grid-template-columns:1fr;gap:50px;}.numbers-inner{grid-template-columns:repeat(2,1fr);}.process-grid{grid-template-columns:repeat(2,1fr);gap:40px;}.process-grid::before{display:none;}}
 @media(max-width:700px){.cards-grid{grid-template-columns:1fr;}nav{padding:16px 24px;}.nav-links,.nav-contact{display:none;}.hero-inner,.section-wrap,.process-inner,.contact-inner,.numbers-inner{padding-left:24px;padding-right:24px;}.hero-scroll{left:24px;}footer{padding:20px 24px;flex-direction:column;gap:10px;text-align:center;}}
@@ -192,16 +180,6 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:28
 <div class="corner c-bl"></div><div class="corner c-br"></div>
 <canvas id="bg-canvas"></canvas>
 <div id="float-layer"></div>
-
-<!-- MODAL -->
-<div id="play-modal" role="dialog" aria-modal="true">
-  <div class="modal-box">
-    <span class="modal-icon">🎮</span>
-    <h2 class="modal-title">Launching Game</h2>
-    <p class="modal-sub">Opening <span class="modal-game" id="modal-game-name"></span>.<br>Game loads in the live build.</p>
-    <button class="modal-close" onclick="closeModal()">Close</button>
-  </div>
-</div>
 
 <!-- NAV -->
 <nav>
@@ -314,7 +292,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:28
           <h3 class="card-title">Ninja Maker</h3>
           <p class="card-desc">A ninja platformer where you build your own stages and publish them. Other players run them, set records, and the cycle keeps going.</p>
           <div class="card-meta"><span class="card-free">FREE</span><span class="card-platform">Browser</span></div>
-          <a href="javascript:void(0)" class="btn-play" onclick="event.stopPropagation();openGame('Ninja Maker')"><span class="btn-label">▶ Play Game</span></a>
+          <a href="demo/ninja-maker.html" class="btn-play"><span class="btn-label">View Game</span></a>
         </div>
       </div>
 
@@ -342,7 +320,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:28
           <h3 class="card-title">Backyard Chickens Simulator</h3>
           <p class="card-desc">Raise and manage a flock of chickens. Collect eggs, unlock different breeds, upgrade the coop, and work through the seasons.</p>
           <div class="card-meta"><span class="card-free">FREE</span><span class="card-platform">Browser</span></div>
-          <a href="javascript:void(0)" class="btn-play" onclick="event.stopPropagation();openGame('Backyard Chickens Simulator')"><span class="btn-label">▶ Play Game</span></a>
+          <a href="demo/backyard-chickens.html" class="btn-play"><span class="btn-label">View Game</span></a>
         </div>
       </div>
 
@@ -372,7 +350,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:28
           <h3 class="card-title">Word Rings</h3>
           <p class="card-desc">Rotate concentric letter rings to spell words. The mechanic is the whole point — simple to understand, harder than it looks.</p>
           <div class="card-meta"><span class="card-free">FREE</span><span class="card-platform">Browser</span></div>
-          <a href="javascript:void(0)" class="btn-play" onclick="event.stopPropagation();openGame('Word Rings')"><span class="btn-label">▶ Play Game</span></a>
+          <a href="demo/word-rings.html" class="btn-play"><span class="btn-label">View Game</span></a>
         </div>
       </div>
 
@@ -402,9 +380,9 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:28
       <p>Whether it's a full project or just an early idea — feel free to reach out. I work on games and web projects and I'm always open to hearing what people are building.</p>
     </div>
     <div class="contact-links">
-      <a href="mailto:contact@tpro.dev" class="contact-link">
+      <a href="/cdn-cgi/l/email-protection#cdaea2a3b9acaeb98db9bdbfa2e3a9a8bb" class="contact-link">
         <span class="contact-link-icon">✉️</span>
-        <div><div class="contact-link-label">Email</div><div class="contact-link-val">contact@tpro.dev</div></div>
+        <div><div class="contact-link-label">Email</div><div class="contact-link-val"><span class="__cf_email__" data-cfemail="5f3c30312b3e3c2b1f2b2f2d30713b3a29">[email&#160;protected]</span></div></div>
       </a>
       <a href="#" class="contact-link">
         <span class="contact-link-icon">💬</span>
@@ -425,7 +403,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:28
   <div class="footer-credit">Site by <a href="#">3djester</a></div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // CURSOR
 const cur=document.getElementById('cursor'),cring=document.getElementById('cursor-ring');
 document.addEventListener('mousemove',e=>{
@@ -434,15 +412,6 @@ document.addEventListener('mousemove',e=>{
 });
 document.addEventListener('mousedown',()=>cur.style.transform='translate(-50%,-50%) scale(2.2)');
 document.addEventListener('mouseup',()=>cur.style.transform='translate(-50%,-50%) scale(1)');
-
-// MODAL
-function openGame(name){
-  document.getElementById('modal-game-name').textContent=name;
-  document.getElementById('play-modal').classList.add('open');
-}
-function closeModal(){document.getElementById('play-modal').classList.remove('open');}
-document.getElementById('play-modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
 
 // CARD CLICK — whole card navigates to game page
 document.querySelectorAll('.game-card').forEach(card=>{
@@ -513,12 +482,4 @@ function draw(){
     ctx.fillStyle=`hsla(${p.hue},70%,60%,${p.op})`;ctx.fill();
   });
   pts.forEach((p,i)=>pts.slice(i+1).forEach(p2=>{
-    const d=Math.hypot(p.x-p2.x,p.y-p2.y);
-    if(d<100){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p2.x,p2.y);ctx.strokeStyle=`rgba(255,255,255,${.03*(1-d/100)})`;ctx.lineWidth=.4;ctx.stroke();}
-  }));
-  requestAnimationFrame(draw);
-}
-draw();
-</script>
-</body>
-</html>
+    const d=Math.hypot(p.x-p2.x,p.y-p
