@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-record_site.py - Records a scrolling video of a website and takes screenshots at intervals.
-Usage: python record_site.py <url>
+record_site.py - Records a scrolling video of a website and takes screenshots.
 """
 
 import sys
@@ -9,18 +8,15 @@ import os
 import time
 import subprocess
 import signal
-from playwright.sync_api import sync_playwright
 
 # --- Configuration ---
-URL = sys.argv[1] if len(sys.argv) > 1 else "https://example.com"
 OUTPUT_DIR = "output"
 VIDEO_RAW = os.path.join(OUTPUT_DIR, "recording_raw.mp4")
 VIDEO_FINAL = os.path.join(OUTPUT_DIR, "recording.mp4")
 SCREENSHOT_DIR = os.path.join(OUTPUT_DIR, "screenshots")
 RESOLUTION = (1920, 1080)
-VIDEO_DURATION = 30          # seconds
-SCREENSHOT_INTERVAL = 5      # seconds between screenshots
-SCROLL_STEPS = 60            # number of scroll steps over the duration
+VIDEO_DURATION = 30
+SCREENSHOT_INTERVAL = 5
 DISPLAY = ":99"
 
 
@@ -66,19 +62,19 @@ def compress_video():
         "-y",
         "-i", VIDEO_RAW,
         "-c:v", "libx264",
-        "-crf", "28",           # quality: lower = better, 28 is a good balance
+        "-crf", "28",
         "-preset", "slow",
-        "-vf", "scale=1920:1080",
+        "-vf", f"scale={RESOLUTION[0]}:{RESOLUTION[1]}",
         "-pix_fmt", "yuv420p",
         VIDEO_FINAL
     ]
     subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     os.remove(VIDEO_RAW)
     size_mb = os.path.getsize(VIDEO_FINAL) / (1024 * 1024)
-    print(f"[*] Final video saved: {VIDEO_FINAL} ({size_mb:.2f} MB)")
+    print(f"[OK] Final video saved: {VIDEO_FINAL} ({size_mb:.2f} MB)")
 
 
-def record_site():
+def record_site(url):
     setup_output_dirs()
     xvfb_proc = start_xvfb()
     ffmpeg_proc = start_ffmpeg()
@@ -87,8 +83,10 @@ def record_site():
     env["DISPLAY"] = DISPLAY
 
     try:
+        from playwright.sync_api import sync_playwright
+
         with sync_playwright() as p:
-            print(f"[*] Opening browser and navigating to: {URL}")
+            print(f"[*] Opening browser and navigating to: {url}")
             browser = p.chromium.launch(
                 headless=False,
                 args=[
@@ -96,6 +94,7 @@ def record_site():
                     "--start-maximized",
                     "--no-sandbox",
                     "--disable-dev-shm-usage",
+                    f"--app={url}",  # app mode: no toolbar, no address bar
                 ],
                 env=env
             )
@@ -103,56 +102,67 @@ def record_site():
                 viewport={"width": RESOLUTION[0], "height": RESOLUTION[1]}
             )
             page = context.new_page()
-            page.goto(URL, wait_until="networkidle", timeout=30000)
-            time.sleep(2)  # let page settle
+            page.wait_for_load_state("networkidle")
+            time.sleep(2)
 
-            # Get total page height
             total_height = page.evaluate("document.body.scrollHeight")
-            viewport_height = RESOLUTION[1]
-            print(f"[*] Page height: {total_height}px | Viewport: {viewport_height}px")
+            print(f"[*] Page height: {total_height}px | Viewport: {RESOLUTION[1]}px")
 
-            step_delay = VIDEO_DURATION / SCROLL_STEPS
-            scroll_per_step = total_height / SCROLL_STEPS
+            # Kick off a smooth continuous scroll in JS for the full duration
+            page.evaluate(f"""
+                () => {{
+                    const totalHeight = document.body.scrollHeight - window.innerHeight;
+                    const duration = {VIDEO_DURATION * 1000};
+                    const startTime = performance.now();
 
+                    function step(now) {{
+                        const elapsed = now - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        window.scrollTo(0, totalHeight * progress);
+                        if (progress < 1) requestAnimationFrame(step);
+                    }}
+
+                    requestAnimationFrame(step);
+                }}
+            """)
+
+            # While JS scrolls, take screenshots at intervals from Python
             screenshot_count = 0
             next_screenshot_time = 0
             start_time = time.time()
 
-            print(f"[*] Scrolling over {VIDEO_DURATION}s, screenshot every {SCREENSHOT_INTERVAL}s...")
+            print(f"[*] Smooth scrolling over {VIDEO_DURATION}s, screenshot every {SCREENSHOT_INTERVAL}s...")
 
-            for step in range(SCROLL_STEPS):
+            while True:
                 elapsed = time.time() - start_time
 
-                # Take screenshot at interval
                 if elapsed >= next_screenshot_time:
                     screenshot_path = os.path.join(
-                        SCREENSHOT_DIR, f"screenshot_{screenshot_count:03d}_{int(elapsed):02d}s.png"
+                        SCREENSHOT_DIR,
+                        f"screenshot_{screenshot_count:03d}_{int(elapsed):02d}s.png"
                     )
                     page.screenshot(path=screenshot_path, full_page=False)
                     print(f"  [+] Screenshot {screenshot_count} @ {elapsed:.1f}s -> {screenshot_path}")
                     screenshot_count += 1
                     next_screenshot_time += SCREENSHOT_INTERVAL
 
-                # Scroll
-                target_scroll = int(scroll_per_step * (step + 1))
-                page.evaluate(f"window.scrollTo({{top: {target_scroll}, behavior: 'smooth'}})")
-                time.sleep(step_delay)
+                if elapsed >= VIDEO_DURATION:
+                    break
+
+                time.sleep(0.1)
 
             # Final screenshot at bottom
-            page.evaluate("window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})")
-            time.sleep(0.5)
-            final_screenshot = os.path.join(SCREENSHOT_DIR, f"screenshot_{screenshot_count:03d}_final.png")
-            page.screenshot(path=final_screenshot, full_page=False)
-            print(f"  [+] Final screenshot -> {final_screenshot}")
+            final_path = os.path.join(SCREENSHOT_DIR, f"screenshot_{screenshot_count:03d}_final.png")
+            page.screenshot(path=final_path, full_page=False)
+            print(f"  [+] Final screenshot -> {final_path}")
+            print(f"[OK] Done. Total screenshots: {screenshot_count + 1}")
 
             browser.close()
-            print(f"[*] Done scrolling. Total screenshots: {screenshot_count + 1}")
 
     finally:
         print("[*] Stopping ffmpeg...")
         ffmpeg_proc.send_signal(signal.SIGINT)
         ffmpeg_proc.wait()
-
         print("[*] Stopping Xvfb...")
         xvfb_proc.terminate()
         xvfb_proc.wait()
@@ -161,4 +171,8 @@ def record_site():
 
 
 if __name__ == "__main__":
-    record_site()
+    if len(sys.argv) < 2:
+        print("Usage: python record_site.py <url>")
+        sys.exit(1)
+
+    record_site(sys.argv[1])
