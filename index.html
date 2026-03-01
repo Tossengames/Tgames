@@ -3,229 +3,400 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TPRO — Developer</title>
+<title>TPRO — Game Developer</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --red: #c0152a; --red-bright: #ff1f3d; --red-glow: #ff3355;
-  --bg: #08000f; --surface: rgba(120,5,25,0.12);
-  --text: #ffe0e6; --text-dim: rgba(255,200,210,0.55); --white: #fff5f7;
-  --green-tag: #44ff88;
+  --red: #a01020;
+  --red-bright: #d42038;
+  --accent: #ff2244;
+  --bg: #07060f;
+  --bg2: #0d0b1a;
+  --surface: rgba(255,255,255,0.04);
+  --surface-r: rgba(180,10,30,0.08);
+  --border: rgba(255,255,255,0.08);
+  --border-accent: rgba(212,32,56,0.35);
+  --text: #e8e0f0;
+  --text-dim: rgba(220,210,240,0.5);
+  --white: #f4f0ff;
+  --green: #22dd77;
+  --blue: #4488ff;
+  --purple: #8855ff;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior:smooth; }
-body { background:var(--bg); color:var(--text); font-family:'Rajdhani',sans-serif; overflow-x:hidden; cursor:none; }
-#cursor { position:fixed; width:12px; height:12px; background:var(--red-bright); border-radius:50%; pointer-events:none; z-index:9999; mix-blend-mode:screen; box-shadow:0 0 15px var(--red-bright); transform:translate(-50%,-50%); transition:transform 0.15s; }
-#cursor-ring { position:fixed; width:34px; height:34px; border:1.5px solid rgba(255,31,61,0.6); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:left 0.1s,top 0.1s; }
-#bg-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; }
-.grid-overlay { position:fixed; inset:0; z-index:0; pointer-events:none; background-image:linear-gradient(rgba(192,21,42,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(192,21,42,0.03) 1px,transparent 1px); background-size:60px 60px; }
-.orb { position:fixed; border-radius:50%; pointer-events:none; z-index:0; filter:blur(90px); }
-.orb-1 { width:600px; height:600px; background:radial-gradient(circle,rgba(100,0,25,0.28) 0%,transparent 70%); top:-200px; left:-200px; animation:orb-breathe 8s ease-in-out infinite; }
-.orb-2 { width:400px; height:400px; background:radial-gradient(circle,rgba(160,10,30,0.15) 0%,transparent 70%); bottom:10%; right:-100px; animation:orb-breathe 10s ease-in-out infinite reverse; }
-@keyframes orb-breathe { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.12);opacity:0.7} }
-.scanline { position:fixed; top:0; left:0; right:0; height:2px; background:linear-gradient(to right,transparent,var(--red-bright),transparent); opacity:0.25; z-index:50; animation:scan 6s ease-in-out infinite; pointer-events:none; }
-@keyframes scan { 0%{top:-2px;opacity:0} 15%{opacity:0.25} 85%{opacity:0.25} 100%{top:100vh;opacity:0} }
-.corner { position:fixed; width:50px; height:50px; pointer-events:none; z-index:10; opacity:0.4; }
-.c-tl { top:18px; left:18px; border-top:2px solid var(--red-bright); border-left:2px solid var(--red-bright); }
-.c-tr { top:18px; right:18px; border-top:2px solid var(--red-bright); border-right:2px solid var(--red-bright); }
-.c-bl { bottom:18px; left:18px; border-bottom:2px solid var(--red-bright); border-left:2px solid var(--red-bright); }
-.c-br { bottom:18px; right:18px; border-bottom:2px solid var(--red-bright); border-right:2px solid var(--red-bright); }
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;overflow-x:hidden;cursor:none;}
 
-nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:22px 60px; background:rgba(8,0,15,0.88); border-bottom:1px solid rgba(192,21,42,0.18); backdrop-filter:blur(12px); }
-.nav-logo { font-family:'Orbitron',monospace; font-weight:900; font-size:1.6rem; letter-spacing:0.12em; color:var(--white); text-shadow:0 0 20px var(--red-bright); text-decoration:none; }
-.nav-logo span { color:var(--red-bright); }
-.nav-links { display:flex; gap:36px; list-style:none; }
-.nav-links a { font-family:'Rajdhani',sans-serif; font-weight:600; font-size:0.9rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--text-dim); text-decoration:none; transition:color 0.3s; cursor:none; }
-.nav-links a:hover { color:var(--red-bright); }
+/* CURSOR */
+#cursor{position:fixed;width:10px;height:10px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;mix-blend-mode:screen;box-shadow:0 0 12px var(--accent);transform:translate(-50%,-50%);transition:transform 0.12s,width 0.2s,height 0.2s;}
+#cursor-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(212,32,56,0.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left 0.08s,top 0.08s;}
+#cursor.hovered{width:18px;height:18px;}
 
-/* HERO */
-.hero-wrap { position:relative; z-index:1; min-height:100vh; display:flex; align-items:center; }
-.hero-inner { padding:0 80px; max-width:1300px; width:100%; }
-.hero-pre { font-family:'Rajdhani',sans-serif; font-size:0.85rem; letter-spacing:0.5em; text-transform:uppercase; color:var(--red-bright); margin-bottom:18px; opacity:0; animation:fadeUp 0.8s 0.3s forwards; }
-.hero-name { font-family:'Orbitron',monospace; font-size:clamp(4rem,11vw,9rem); font-weight:900; line-height:0.95; color:var(--white); text-shadow:0 0 60px rgba(192,21,42,0.35); opacity:0; animation:fadeUp 0.8s 0.5s forwards; }
-.hero-name .accent { color:var(--red-bright); text-shadow:0 0 30px var(--red-bright),0 0 70px var(--red-glow); }
-.hero-tagline { margin-top:28px; font-size:1.2rem; font-weight:400; color:var(--text-dim); max-width:580px; line-height:1.8; opacity:0; animation:fadeUp 0.8s 0.7s forwards; }
-.hero-tagline strong { color:var(--text); font-weight:700; }
-.hero-stack { margin-top:28px; display:flex; flex-wrap:wrap; gap:10px; opacity:0; animation:fadeUp 0.8s 0.9s forwards; }
-.stack-tag { font-family:'Orbitron',monospace; font-size:0.62rem; letter-spacing:0.2em; padding:7px 16px; border:1px solid rgba(192,21,42,0.35); color:var(--text-dim); clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%); }
-.hero-scroll { position:absolute; bottom:40px; left:80px; font-family:'Rajdhani',sans-serif; font-size:0.75rem; letter-spacing:0.4em; text-transform:uppercase; color:var(--text-dim); display:flex; align-items:center; gap:12px; opacity:0; animation:fadeUp 0.8s 1.2s forwards; }
-.hero-scroll::before { content:''; width:40px; height:1px; background:var(--red-bright); }
+/* CANVAS */
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
 
-/* ABOUT STRIP */
-#about-strip { position:relative; z-index:1; border-top:1px solid rgba(192,21,42,0.12); border-bottom:1px solid rgba(192,21,42,0.12); padding:80px 0; }
-.section-wrap { max-width:1300px; margin:0 auto; padding:0 60px; }
-.about-strip-inner { display:grid; grid-template-columns:1fr 1.8fr; gap:80px; align-items:center; }
-.about-label { font-family:'Orbitron',monospace; font-size:0.65rem; letter-spacing:0.5em; text-transform:uppercase; color:var(--red-bright); margin-bottom:14px; }
-.about-heading { font-family:'Orbitron',monospace; font-size:clamp(1.5rem,2.5vw,2.2rem); font-weight:700; color:var(--white); line-height:1.25; }
-.about-body { font-size:1.05rem; font-weight:300; color:var(--text-dim); line-height:1.85; }
-.about-body + .about-body { margin-top:16px; }
-.tech-pills { display:flex; flex-wrap:wrap; gap:10px; margin-top:26px; }
-.tech-pill { font-family:'Orbitron',monospace; font-size:0.62rem; letter-spacing:0.15em; padding:7px 16px; border:1px solid rgba(192,21,42,0.3); color:var(--text-dim); clip-path:polygon(7px 0,100% 0,calc(100% - 7px) 100%,0 100%); transition:border-color 0.3s,color 0.3s; }
-.tech-pill:hover { border-color:var(--red-bright); color:var(--red-bright); }
+/* GRID */
+.grid-overlay{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);
+  background-size:70px 70px;}
 
-/* WORK */
-#work { position:relative; z-index:1; padding:100px 0; }
-.work-header { display:flex; align-items:baseline; gap:24px; margin-bottom:56px; }
-.work-label { font-family:'Orbitron',monospace; font-size:0.65rem; letter-spacing:0.5em; text-transform:uppercase; color:var(--red-bright); }
-.work-title { font-family:'Orbitron',monospace; font-size:clamp(1.6rem,2.8vw,2.3rem); font-weight:700; color:var(--white); }
-.cards-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:26px; }
+/* ORBS — more varied, not just red */
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(100px);}
+.orb-1{width:700px;height:700px;background:radial-gradient(circle,rgba(80,0,20,0.22) 0%,transparent 70%);top:-250px;left:-200px;animation:orb-breathe 9s ease-in-out infinite;}
+.orb-2{width:500px;height:500px;background:radial-gradient(circle,rgba(40,20,100,0.18) 0%,transparent 70%);bottom:-100px;right:-150px;animation:orb-breathe 12s ease-in-out infinite reverse;}
+.orb-3{width:350px;height:350px;background:radial-gradient(circle,rgba(20,60,140,0.12) 0%,transparent 70%);top:40%;left:55%;animation:orb-breathe 7s ease-in-out 2s infinite;}
+@keyframes orb-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.1);opacity:0.7}}
 
-/* GAME CARD */
-.game-card { position:relative; background:var(--surface); border:1px solid rgba(192,21,42,0.25); clip-path:polygon(0 0,calc(100% - 22px) 0,100% 22px,100% 100%,22px 100%,0 calc(100% - 22px)); transition:box-shadow 0.35s,border-color 0.35s; overflow:hidden; }
-.game-card::after { content:''; position:absolute; top:0; right:0; width:22px; height:22px; background:var(--red); clip-path:polygon(0 0,100% 0,100% 100%); opacity:0.5; transition:opacity 0.3s; pointer-events:none; }
-.game-card:hover { box-shadow:0 12px 40px rgba(192,21,42,0.18),0 0 0 1px rgba(255,31,61,0.3); border-color:rgba(255,31,61,0.4); }
-.game-card:hover::after { opacity:0.8; }
+/* SCANLINE */
+.scanline{position:fixed;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,rgba(212,32,56,0.4),transparent);opacity:0;z-index:50;animation:scan 7s ease-in-out infinite;pointer-events:none;}
+@keyframes scan{0%{top:-1px;opacity:0}10%{opacity:1}90%{opacity:0.3}100%{top:100vh;opacity:0}}
 
-/* CARD IMAGE AREA — ready for real images */
-.card-img { width:100%; height:210px; position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center; background:var(--img-bg, #100010); }
-/* Real image fills area */
-.card-img img.real-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; display:block; z-index:1; }
-/* Gradient overlay */
-.card-img::after { content:''; position:absolute; inset:0; z-index:2; background:linear-gradient(to top,rgba(8,0,15,0.65) 0%,transparent 55%); pointer-events:none; }
-/* Fallback visible when no real img */
-.fallback-art { position:relative; z-index:1; }
+/* CORNER BRACKETS */
+.corner{position:fixed;width:44px;height:44px;pointer-events:none;z-index:10;opacity:0.3;}
+.c-tl{top:20px;left:20px;border-top:1.5px solid var(--accent);border-left:1.5px solid var(--accent);}
+.c-tr{top:20px;right:20px;border-top:1.5px solid var(--accent);border-right:1.5px solid var(--accent);}
+.c-bl{bottom:20px;left:20px;border-bottom:1.5px solid var(--accent);border-left:1.5px solid var(--accent);}
+.c-br{bottom:20px;right:20px;border-bottom:1.5px solid var(--accent);border-right:1.5px solid var(--accent);}
 
-.card-body { padding:24px 26px 28px; }
-.card-genre { font-family:'Orbitron',monospace; font-size:0.6rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--red-bright); margin-bottom:8px; }
-.card-title { font-family:'Orbitron',monospace; font-size:1.2rem; font-weight:700; color:var(--white); margin-bottom:10px; }
-.card-desc { font-size:0.92rem; font-weight:300; color:var(--text-dim); line-height:1.65; margin-bottom:18px; }
-.card-meta { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
-.card-free { font-family:'Orbitron',monospace; font-size:0.62rem; letter-spacing:0.25em; color:var(--green-tag); text-shadow:0 0 10px rgba(68,255,136,0.5); }
-.card-platform { font-size:0.75rem; color:var(--text-dim); letter-spacing:0.12em; }
-.card-actions { display:flex; gap:10px; }
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 60px;background:rgba(7,6,15,0.82);border-bottom:1px solid var(--border);backdrop-filter:blur(16px);}
+.nav-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:1.5rem;letter-spacing:0.12em;color:var(--white);text-decoration:none;position:relative;}
+.nav-logo span{color:var(--accent);}
+.nav-logo::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--accent);transition:width 0.3s;}
+.nav-logo:hover::after{width:100%;}
+.nav-links{display:flex;gap:36px;list-style:none;}
+.nav-links a{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:0.88rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;transition:color 0.3s;cursor:none;position:relative;}
+.nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--accent);transition:width 0.3s;}
+.nav-links a:hover{color:var(--white);}
+.nav-links a:hover::after{width:100%;}
+.nav-contact{font-family:'Orbitron',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;padding:9px 22px;border:1px solid var(--border-accent);color:var(--accent);text-decoration:none;cursor:none;transition:all 0.3s;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);}
+.nav-contact:hover{background:var(--accent);color:var(--bg);}
 
-/* Card buttons — both fully functional links */
-.btn-details { flex:1; font-family:'Orbitron',monospace; font-size:0.66rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; padding:13px 0; background:transparent; color:var(--text-dim); border:1px solid rgba(192,21,42,0.3); text-decoration:none; text-align:center; clip-path:polygon(7px 0,100% 0,calc(100% - 7px) 100%,0 100%); transition:all 0.3s; cursor:none; display:block; }
-.btn-details:hover { border-color:rgba(255,31,61,0.6); color:var(--white); }
+/* ============ HERO ============ */
+.hero-wrap{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;}
+.hero-inner{padding:0 80px;max-width:1400px;width:100%;}
+.hero-pre{font-family:'Rajdhani',sans-serif;font-size:0.82rem;letter-spacing:0.55em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;opacity:0;animation:fadeUp 0.8s 0.2s forwards;display:flex;align-items:center;gap:12px;}
+.hero-pre::before{content:'';display:block;width:32px;height:1px;background:var(--accent);}
+.hero-name{font-family:'Orbitron',monospace;font-size:clamp(4.5rem,12vw,10rem);font-weight:900;line-height:0.9;color:var(--white);opacity:0;animation:fadeUp 0.8s 0.4s forwards;}
+.hero-name .accent{color:var(--accent);text-shadow:0 0 40px rgba(212,32,56,0.5);}
+.hero-tagline{margin-top:30px;font-size:1.18rem;font-weight:400;color:var(--text-dim);max-width:540px;line-height:1.82;opacity:0;animation:fadeUp 0.8s 0.6s forwards;}
+.hero-tagline strong{color:var(--text);font-weight:600;}
+.hero-stack{margin-top:30px;display:flex;flex-wrap:wrap;gap:9px;opacity:0;animation:fadeUp 0.8s 0.8s forwards;}
+.stack-tag{font-family:'Orbitron',monospace;font-size:0.6rem;letter-spacing:0.18em;padding:7px 15px;border:1px solid var(--border);color:var(--text-dim);background:rgba(255,255,255,0.03);clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);transition:border-color 0.3s,color 0.3s;}
+.stack-tag:hover{border-color:var(--accent);color:var(--white);}
+.hero-cta{margin-top:42px;display:flex;gap:16px;opacity:0;animation:fadeUp 0.8s 1s forwards;}
+.btn-primary{font-family:'Orbitron',monospace;font-size:0.75rem;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;padding:16px 40px;background:var(--accent);color:#fff;border:none;text-decoration:none;cursor:none;clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);position:relative;overflow:hidden;transition:box-shadow 0.3s;}
+.btn-primary::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.15);transform:translateX(-100%);transition:transform 0.3s;}
+.btn-primary:hover::before{transform:translateX(0);}
+.btn-primary:hover{box-shadow:0 0 35px rgba(212,32,56,0.5);}
+.btn-ghost-sm{font-family:'Orbitron',monospace;font-size:0.75rem;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;padding:15px 36px;background:transparent;color:var(--text-dim);border:1px solid var(--border);text-decoration:none;cursor:none;clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);transition:all 0.3s;}
+.btn-ghost-sm:hover{border-color:rgba(255,255,255,0.3);color:var(--white);}
+.hero-scroll{position:absolute;bottom:38px;left:80px;font-family:'Rajdhani',sans-serif;font-size:0.72rem;letter-spacing:0.42em;text-transform:uppercase;color:var(--text-dim);display:flex;align-items:center;gap:10px;opacity:0;animation:fadeUp 0.8s 1.3s forwards;}
+.hero-scroll::before{content:'';width:32px;height:1px;background:var(--accent);}
 
-.btn-play { flex:1.6; font-family:'Orbitron',monospace; font-size:0.66rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; padding:13px 0; background:var(--red); color:var(--white); border:none; text-decoration:none; text-align:center; clip-path:polygon(7px 0,100% 0,calc(100% - 7px) 100%,0 100%); position:relative; overflow:hidden; cursor:none; transition:box-shadow 0.3s; display:block; }
-.btn-play::before { content:''; position:absolute; inset:0; background:var(--red-bright); transform:translateX(-100%); transition:transform 0.3s; }
-.btn-play:hover::before { transform:translateX(0); }
-.btn-play:hover { box-shadow:0 0 28px rgba(255,31,61,0.5); }
-.btn-play .btn-label { position:relative; z-index:1; }
+/* FLOATING GAME ICONS */
+#float-layer{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.float-icon{position:absolute;opacity:0;pointer-events:none;animation:float-drift linear infinite;filter:drop-shadow(0 0 6px currentColor);}
+@keyframes float-drift{
+  0%{opacity:0;transform:translateY(0) rotate(0deg) scale(0.8);}
+  8%{opacity:1;}
+  92%{opacity:0.6;}
+  100%{opacity:0;transform:translateY(-100vh) rotate(360deg) scale(1.1);}
+}
+
+/* ============ ABOUT ============ */
+#about{position:relative;z-index:1;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:90px 0;}
+.section-wrap{max-width:1300px;margin:0 auto;padding:0 60px;}
+.about-inner{display:grid;grid-template-columns:1fr 1.7fr;gap:80px;align-items:start;}
+.sec-label{font-family:'Orbitron',monospace;font-size:0.62rem;letter-spacing:0.55em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.sec-label::before{content:'';display:block;width:24px;height:1px;background:var(--accent);}
+.sec-heading{font-family:'Orbitron',monospace;font-size:clamp(1.5rem,2.5vw,2.1rem);font-weight:700;color:var(--white);line-height:1.25;}
+.about-body{font-size:1.04rem;font-weight:300;color:var(--text-dim);line-height:1.88;margin-top:18px;}
+.about-body strong{color:var(--text);font-weight:600;}
+.tech-pills{display:flex;flex-wrap:wrap;gap:9px;margin-top:26px;}
+.tech-pill{font-family:'Orbitron',monospace;font-size:0.58rem;letter-spacing:0.15em;padding:7px 15px;border:1px solid var(--border);color:var(--text-dim);background:var(--surface);clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%);transition:border-color 0.3s,color 0.3s,background 0.3s;}
+.tech-pill:hover{border-color:var(--accent);color:var(--white);background:rgba(212,32,56,0.08);}
+
+/* WHAT I DO — service cards */
+.services{margin-top:0;}
+.service-item{border:1px solid var(--border);padding:26px 28px;margin-bottom:14px;background:var(--surface);position:relative;transition:border-color 0.3s,background 0.3s;}
+.service-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--accent);transform:scaleY(0);transform-origin:bottom;transition:transform 0.3s;}
+.service-item:hover{border-color:var(--border-accent);background:rgba(212,32,56,0.05);}
+.service-item:hover::before{transform:scaleY(1);}
+.service-title{font-family:'Orbitron',monospace;font-size:0.85rem;font-weight:700;color:var(--white);margin-bottom:8px;}
+.service-desc{font-size:0.9rem;font-weight:300;color:var(--text-dim);line-height:1.65;}
+.service-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.service-tag{font-family:'Orbitron',monospace;font-size:0.55rem;letter-spacing:0.15em;padding:4px 10px;border:1px solid var(--border);color:var(--text-dim);border-radius:2px;}
+
+/* ============ NUMBERS STRIP ============ */
+#numbers{position:relative;z-index:1;padding:60px 0;background:rgba(255,255,255,0.02);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.numbers-inner{max-width:1300px;margin:0 auto;padding:0 60px;display:grid;grid-template-columns:repeat(4,1fr);gap:40px;}
+.number-item{text-align:center;}
+.number-val{font-family:'Orbitron',monospace;font-size:2.8rem;font-weight:900;color:var(--white);line-height:1;margin-bottom:8px;}
+.number-val span{color:var(--accent);}
+.number-label{font-size:0.82rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--text-dim);}
+
+/* ============ PROJECTS ============ */
+#work{position:relative;z-index:1;padding:100px 0;}
+.work-header{margin-bottom:56px;display:flex;align-items:baseline;gap:20px;}
+.work-title{font-family:'Orbitron',monospace;font-size:clamp(1.6rem,2.8vw,2.3rem);font-weight:700;color:var(--white);}
+.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+
+/* CARD */
+.game-card{position:relative;background:var(--surface);border:1px solid var(--border);overflow:hidden;transition:transform 0.35s cubic-bezier(0.23,1,0.32,1),box-shadow 0.35s,border-color 0.35s;cursor:none;}
+.game-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(212,32,56,0.04) 0%,transparent 60%);pointer-events:none;z-index:0;}
+.game-card:hover{transform:translateY(-8px);box-shadow:0 24px 60px rgba(0,0,0,0.5),0 0 0 1px var(--border-accent);border-color:var(--border-accent);}
+.card-img{width:100%;height:200px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--img-bg,#0c0a18);}
+.card-img img.real-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;}
+.card-img::after{content:'';position:absolute;inset:0;z-index:2;background:linear-gradient(to top,rgba(7,6,15,0.7) 0%,transparent 50%);pointer-events:none;}
+.fallback-art{position:relative;z-index:1;}
+.card-body{padding:22px 24px 26px;position:relative;z-index:1;}
+.card-genre{font-family:'Orbitron',monospace;font-size:0.58rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.card-title{font-family:'Orbitron',monospace;font-size:1.15rem;font-weight:700;color:var(--white);margin-bottom:9px;}
+.card-desc{font-size:0.9rem;font-weight:300;color:var(--text-dim);line-height:1.65;margin-bottom:18px;}
+.card-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.card-free{font-family:'Orbitron',monospace;font-size:0.6rem;letter-spacing:0.25em;color:var(--green);text-shadow:0 0 10px rgba(34,221,119,0.4);}
+.card-platform{font-size:0.75rem;color:var(--text-dim);letter-spacing:0.1em;}
+.btn-play{width:100%;font-family:'Orbitron',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;padding:13px 0;background:rgba(212,32,56,0.15);color:var(--accent);border:1px solid var(--border-accent);text-decoration:none;text-align:center;position:relative;overflow:hidden;cursor:none;transition:all 0.3s;display:block;}
+.btn-play::before{content:'';position:absolute;inset:0;background:var(--accent);transform:translateX(-100%);transition:transform 0.3s;}
+.btn-play:hover::before{transform:translateX(0);}
+.btn-play:hover{color:#fff;box-shadow:0 0 24px rgba(212,32,56,0.4);}
+.btn-play .btn-label{position:relative;z-index:1;}
+
+/* ============ PROCESS ============ */
+#process{position:relative;z-index:1;border-top:1px solid var(--border);padding:90px 0;}
+.process-inner{max-width:1300px;margin:0 auto;padding:0 60px;}
+.process-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:56px;position:relative;}
+.process-grid::before{content:'';position:absolute;top:20px;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--border-accent),var(--border-accent),transparent);}
+.process-step{padding:0 20px;position:relative;}
+.step-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);margin-bottom:20px;box-shadow:0 0 12px rgba(212,32,56,0.6);position:relative;z-index:1;}
+.step-num{font-family:'Orbitron',monospace;font-size:0.6rem;letter-spacing:0.3em;color:var(--accent);margin-bottom:10px;}
+.step-title{font-family:'Orbitron',monospace;font-size:0.88rem;font-weight:700;color:var(--white);margin-bottom:10px;}
+.step-desc{font-size:0.88rem;font-weight:300;color:var(--text-dim);line-height:1.65;}
+
+/* ============ CONTACT STRIP ============ */
+#contact{position:relative;z-index:1;border-top:1px solid var(--border);padding:90px 0;}
+.contact-inner{max-width:1300px;margin:0 auto;padding:0 60px;display:grid;grid-template-columns:1.2fr 1fr;gap:80px;align-items:center;}
+.contact-text h2{font-family:'Orbitron',monospace;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:700;color:var(--white);line-height:1.2;margin-bottom:20px;}
+.contact-text h2 span{color:var(--accent);}
+.contact-text p{font-size:1.02rem;font-weight:300;color:var(--text-dim);line-height:1.82;max-width:480px;}
+.contact-links{display:flex;flex-direction:column;gap:14px;}
+.contact-link{display:flex;align-items:center;gap:16px;padding:18px 22px;border:1px solid var(--border);background:var(--surface);text-decoration:none;cursor:none;transition:all 0.3s;position:relative;overflow:hidden;}
+.contact-link::before{content:'';position:absolute;inset:0;background:rgba(212,32,56,0.06);transform:translateX(-100%);transition:transform 0.3s;}
+.contact-link:hover::before{transform:translateX(0);}
+.contact-link:hover{border-color:var(--border-accent);}
+.contact-link-icon{font-size:1.2rem;flex-shrink:0;}
+.contact-link-label{font-family:'Orbitron',monospace;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);}
+.contact-link-val{font-size:0.95rem;font-weight:600;color:var(--white);}
+.contact-link:hover .contact-link-val{color:var(--accent);}
+
+/* ============ FOOTER ============ */
+footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:28px 60px;display:flex;align-items:center;justify-content:space-between;}
+.footer-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:1rem;color:var(--white);}
+.footer-logo span{color:var(--accent);}
+.footer-center{font-size:0.75rem;letter-spacing:0.18em;color:var(--text-dim);text-transform:uppercase;}
+.footer-credit{font-size:0.72rem;color:var(--text-dim);letter-spacing:0.08em;}
+.footer-credit a{color:rgba(212,32,56,0.7);text-decoration:none;transition:color 0.3s;cursor:none;}
+.footer-credit a:hover{color:var(--accent);}
 
 /* PLAY MODAL */
-#play-modal { position:fixed; inset:0; z-index:1000; background:rgba(8,0,15,0.93); backdrop-filter:blur(18px); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.3s; }
-#play-modal.open { opacity:1; pointer-events:all; }
-.modal-box { background:rgba(18,0,10,0.98); border:1px solid rgba(255,31,61,0.4); clip-path:polygon(0 0,calc(100% - 28px) 0,100% 28px,100% 100%,28px 100%,0 calc(100% - 28px)); padding:56px 52px; text-align:center; max-width:440px; width:90%; box-shadow:0 0 80px rgba(192,21,42,0.28); transform:scale(0.92); transition:transform 0.3s; }
-#play-modal.open .modal-box { transform:scale(1); }
-.modal-icon { font-size:3rem; margin-bottom:20px; display:block; }
-.modal-title { font-family:'Orbitron',monospace; font-size:1.35rem; font-weight:900; color:var(--white); margin-bottom:12px; }
-.modal-sub { font-size:1rem; font-weight:300; color:var(--text-dim); line-height:1.65; margin-bottom:30px; }
-.modal-game { color:var(--red-bright); font-weight:700; }
-.modal-close { font-family:'Orbitron',monospace; font-size:0.72rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; padding:14px 42px; background:transparent; color:var(--red-bright); border:1px solid var(--red-bright); cursor:pointer; clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%); transition:all 0.3s; }
-.modal-close:hover { background:var(--red-bright); color:var(--bg); }
+#play-modal{position:fixed;inset:0;z-index:1000;background:rgba(7,6,15,0.94);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+#play-modal.open{opacity:1;pointer-events:all;}
+.modal-box{background:rgba(12,10,24,0.98);border:1px solid var(--border-accent);padding:52px 48px;text-align:center;max-width:420px;width:90%;box-shadow:0 0 80px rgba(212,32,56,0.18);transform:scale(0.92) translateY(10px);transition:transform 0.3s;}
+#play-modal.open .modal-box{transform:scale(1) translateY(0);}
+.modal-icon{font-size:2.8rem;margin-bottom:16px;display:block;}
+.modal-title{font-family:'Orbitron',monospace;font-size:1.2rem;font-weight:900;color:var(--white);margin-bottom:10px;}
+.modal-sub{font-size:0.97rem;font-weight:300;color:var(--text-dim);line-height:1.65;margin-bottom:28px;}
+.modal-game{color:var(--accent);font-weight:600;}
+.modal-close{font-family:'Orbitron',monospace;font-size:0.68rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;padding:13px 38px;background:transparent;color:var(--accent);border:1px solid var(--border-accent);cursor:pointer;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);transition:all 0.3s;}
+.modal-close:hover{background:var(--accent);color:#fff;}
 
-footer { position:relative; z-index:1; border-top:1px solid rgba(192,21,42,0.15); padding:36px 60px; display:flex; align-items:center; justify-content:space-between; }
-.footer-logo { font-family:'Orbitron',monospace; font-weight:900; font-size:1rem; color:var(--red-bright); }
-.footer-text { font-size:0.78rem; letter-spacing:0.22em; color:var(--text-dim); text-transform:uppercase; }
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 
-@keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
-@media(max-width:1100px){ .cards-grid{grid-template-columns:1fr 1fr;} .about-strip-inner{grid-template-columns:1fr;gap:40px;} }
-@media(max-width:700px){ .cards-grid{grid-template-columns:1fr;} nav{padding:18px 24px;} .nav-links{display:none;} .hero-inner,.section-wrap{padding-left:24px;padding-right:24px;} .hero-scroll{left:24px;} footer{padding:24px;flex-direction:column;gap:10px;text-align:center;} }
+@media(max-width:1100px){
+  .cards-grid{grid-template-columns:1fr 1fr;}
+  .about-inner,.contact-inner{grid-template-columns:1fr;gap:50px;}
+  .numbers-inner{grid-template-columns:repeat(2,1fr);}
+  .process-grid{grid-template-columns:repeat(2,1fr);gap:40px;}
+  .process-grid::before{display:none;}
+}
+@media(max-width:700px){
+  .cards-grid{grid-template-columns:1fr;}
+  nav{padding:16px 24px;}
+  .nav-links,.nav-contact{display:none;}
+  .hero-inner,.section-wrap,.process-inner,.contact-inner,.numbers-inner{padding-left:24px;padding-right:24px;}
+  .hero-scroll{left:24px;}
+  footer{padding:20px 24px;flex-direction:column;gap:10px;text-align:center;}
+}
 </style>
 </head>
 <body>
+
+<!-- Fixed chrome -->
 <div id="cursor"></div>
 <div id="cursor-ring"></div>
 <div class="scanline"></div>
 <div class="grid-overlay"></div>
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
 <div class="corner c-tl"></div><div class="corner c-tr"></div>
 <div class="corner c-bl"></div><div class="corner c-br"></div>
 <canvas id="bg-canvas"></canvas>
+<div id="float-layer"></div>
 
 <!-- MODAL -->
 <div id="play-modal" role="dialog" aria-modal="true">
   <div class="modal-box">
     <span class="modal-icon">🎮</span>
     <h2 class="modal-title">Launching Game</h2>
-    <p class="modal-sub">Opening <span class="modal-game" id="modal-game-name"></span>.<br>The game will load in the final build.</p>
+    <p class="modal-sub">Opening <span class="modal-game" id="modal-game-name"></span>.<br>Game loads in the live build.</p>
     <button class="modal-close" onclick="closeModal()">Close</button>
   </div>
 </div>
 
+<!-- NAV -->
 <nav>
   <a href="index.html" class="nav-logo">T<span>PRO</span></a>
   <ul class="nav-links">
-    <li><a href="#work">Work</a></li>
-    <li><a href="#about-strip">About</a></li>
-    <li><a href="/cdn-cgi/l/email-protection#2a4945445e4b495e6a5e5a5845044e4f5c">Contact</a></li>
+    <li><a href="#work">Projects</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#process">Process</a></li>
   </ul>
+  <a href="#contact" class="nav-contact">Get in touch</a>
 </nav>
 
-<!-- HERO -->
+<!-- ====== HERO ====== -->
 <div class="hero-wrap">
   <div class="hero-inner">
-    <div class="hero-pre">// Independent Developer</div>
+    <div class="hero-pre">Independent Game Developer</div>
     <h1 class="hero-name">T<span class="accent">PRO</span></h1>
     <p class="hero-tagline">
-      Games, web apps, tools — whatever the project needs. Working with <strong>C#, Java, HTML, CSS and JavaScript</strong>, with a focus on game development.
+      I design and build games and web applications. Focused on <strong>game development</strong> — mechanics, systems, and the stuff that makes games feel good to play.
     </p>
     <div class="hero-stack">
       <span class="stack-tag">C#</span>
       <span class="stack-tag">Java</span>
-      <span class="stack-tag">HTML / CSS</span>
+      <span class="stack-tag">HTML</span>
+      <span class="stack-tag">CSS</span>
       <span class="stack-tag">JavaScript</span>
       <span class="stack-tag">Unity</span>
-      <span class="stack-tag">Web Games</span>
+      <span class="stack-tag">Game Design</span>
+      <span class="stack-tag">Web Dev</span>
     </div>
-    <div class="hero-scroll">See my work</div>
+    <div class="hero-cta">
+      <a href="#work" class="btn-primary">See Projects</a>
+      <a href="#contact" class="btn-ghost-sm">Get in Touch</a>
+    </div>
+    <div class="hero-scroll">Scroll down</div>
   </div>
 </div>
 
-<!-- ABOUT -->
-<div id="about-strip">
+<!-- ====== NUMBERS ====== -->
+<div id="numbers">
+  <div class="numbers-inner">
+    <div class="number-item">
+      <div class="number-val">3<span>+</span></div>
+      <div class="number-label">Games Shipped</div>
+    </div>
+    <div class="number-item">
+      <div class="number-val">5<span>+</span></div>
+      <div class="number-label">Languages & Tools</div>
+    </div>
+    <div class="number-item">
+      <div class="number-val">100<span>%</span></div>
+      <div class="number-label">Free to Play</div>
+    </div>
+    <div class="number-item">
+      <div class="number-val"><span>∞</span></div>
+      <div class="number-label">Community Levels</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== ABOUT ====== -->
+<div id="about">
   <div class="section-wrap">
-    <div class="about-strip-inner">
+    <div class="about-inner">
       <div>
-        <div class="about-label">// About</div>
-        <h2 class="about-heading">Independent<br>developer.</h2>
-      </div>
-      <div>
-        <p class="about-body">I design and build games and web projects. My work covers the full picture — mechanics, UI, logic, and everything in between. The games on this page are things I built and shipped myself.</p>
-        <p class="about-body">I work across <strong style="color:var(--text)">C#, Java, HTML, CSS and JavaScript</strong>. If you're working on a game or an app and need a developer, feel free to get in touch.</p>
+        <div class="sec-label">About</div>
+        <h2 class="sec-heading">Game developer.<br>Web developer.<br>Independent.</h2>
+        <p class="about-body">I build games and web projects. My work covers the full scope — game mechanics, UI, logic, systems design, and front-end. The games on this page are things I designed, built, and shipped.</p>
+        <p class="about-body">Working with <strong>C#, Java, HTML, CSS and JavaScript</strong>. If you have a game or app project and need a developer, feel free to reach out.</p>
         <div class="tech-pills">
-          <span class="tech-pill">C#</span><span class="tech-pill">Java</span>
-          <span class="tech-pill">HTML</span><span class="tech-pill">CSS</span>
-          <span class="tech-pill">JavaScript</span><span class="tech-pill">Unity</span>
-          <span class="tech-pill">Game Design</span><span class="tech-pill">Web Dev</span>
+          <span class="tech-pill">C#</span>
+          <span class="tech-pill">Java</span>
+          <span class="tech-pill">HTML</span>
+          <span class="tech-pill">CSS</span>
+          <span class="tech-pill">JavaScript</span>
+          <span class="tech-pill">Unity</span>
+          <span class="tech-pill">Game Design</span>
+          <span class="tech-pill">Level Design</span>
+          <span class="tech-pill">Web Apps</span>
+        </div>
+      </div>
+
+      <div class="services">
+        <div class="service-item">
+          <div class="service-title">Game Development</div>
+          <div class="service-desc">Full game builds from concept to playable product. Browser games, Unity projects, game systems, and mechanics that actually feel good.</div>
+          <div class="service-tags">
+            <span class="service-tag">Unity</span>
+            <span class="service-tag">C#</span>
+            <span class="service-tag">Browser</span>
+            <span class="service-tag">Gameplay Systems</span>
+          </div>
+        </div>
+        <div class="service-item">
+          <div class="service-title">Web Development</div>
+          <div class="service-desc">Web apps, interactive tools, game-adjacent web projects. Clean, functional builds with attention to how things behave, not just how they look.</div>
+          <div class="service-tags">
+            <span class="service-tag">HTML</span>
+            <span class="service-tag">CSS</span>
+            <span class="service-tag">JavaScript</span>
+            <span class="service-tag">Java</span>
+          </div>
+        </div>
+        <div class="service-item">
+          <div class="service-title">Game Design</div>
+          <div class="service-desc">Mechanics, level design, player experience, progression systems. The thinking behind how a game works, not just how it runs.</div>
+          <div class="service-tags">
+            <span class="service-tag">Level Design</span>
+            <span class="service-tag">Systems</span>
+            <span class="service-tag">UX</span>
+            <span class="service-tag">Prototyping</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- WORK -->
+<!-- ====== PROJECTS ====== -->
 <div id="work">
   <div class="section-wrap">
     <div class="work-header">
-      <span class="work-label">// Games</span>
-      <h2 class="work-title">Projects</h2>
+      <div class="sec-label">Projects</div>
+      <h2 class="work-title">Games</h2>
     </div>
 
     <div class="cards-grid">
 
-      <!-- NINJA MAKER
-           TO ADD IMAGE: set src on the img tag below, e.g. src="images/ninja-maker.jpg"
-           The fallback SVG will auto-hide once a valid image is present -->
-      <div class="game-card" style="--img-bg:#0e0018">
+      <!-- NINJA MAKER — swap src="" with your image path e.g. src="images/ninja-maker.jpg" -->
+      <div class="game-card" data-href="demo/ninja-maker.html" style="--img-bg:#0d0b18">
         <div class="card-img">
           <img class="real-img" src="" alt="Ninja Maker" id="img-ninja" onerror="this.style.display='none'">
           <div class="fallback-art" id="fb-ninja">
             <svg width="120" height="120" viewBox="0 0 130 130" fill="none">
-              <circle cx="65" cy="65" r="55" stroke="rgba(255,31,61,0.18)" stroke-width="1" stroke-dasharray="4 6"/>
+              <circle cx="65" cy="65" r="55" stroke="rgba(212,32,56,0.15)" stroke-width="1" stroke-dasharray="4 6"/>
               <rect x="46" y="68" width="38" height="30" rx="3" fill="#1a0025"/>
-              <rect x="44" y="64" width="42" height="10" rx="2" fill="#260030"/>
+              <rect x="44" y="64" width="42" height="10" rx="2" fill="#240030"/>
               <circle cx="65" cy="52" r="18" fill="#1a0025"/>
-              <rect x="50" y="49" width="30" height="9" rx="4.5" fill="#c0152a"/>
+              <rect x="50" y="49" width="30" height="9" rx="4.5" fill="#a01020"/>
               <rect x="57" y="51" width="6" height="4" rx="1" fill="white"/><circle cx="60" cy="53" r="1.5" fill="#0d0018"/>
               <rect x="67" y="51" width="6" height="4" rx="1" fill="white"/><circle cx="70" cy="53" r="1.5" fill="#0d0018"/>
-              <line x1="78" y1="38" x2="108" y2="20" stroke="#ff6688" stroke-width="2.5" stroke-linecap="round"/>
-              <rect x="72" y="42" width="12" height="5" rx="1" fill="#3d0009" transform="rotate(-32 78 44)"/>
-              <polygon points="26,36 28,30 30,36 36,36 31,39 33,45 28,42 23,45 25,39 20,36" fill="rgba(255,31,61,0.55)"/>
-              <polygon points="108,88 110,82 112,88 118,88 113,91 115,97 110,94 105,97 107,91 102,88" fill="rgba(255,31,61,0.35)"/>
+              <line x1="78" y1="38" x2="108" y2="20" stroke="rgba(212,32,56,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+              <polygon points="26,36 28,30 30,36 36,36 31,39 33,45 28,42 23,45 25,39 20,36" fill="rgba(212,32,56,0.45)"/>
             </svg>
           </div>
         </div>
@@ -238,32 +409,28 @@ footer { position:relative; z-index:1; border-top:1px solid rgba(192,21,42,0.15)
             <span class="card-platform">Browser</span>
           </div>
           <div class="card-actions">
-            <a href="ninja-maker.html" class="btn-details">Details</a>
-            <a href="javascript:void(0)" class="btn-play" onclick="openGame('Ninja Maker')"><span class="btn-label">▶ Play Game</span></a>
+            <a href="javascript:void(0)" class="btn-play" onclick="event.stopPropagation(); openGame('Ninja Maker')"><span class="btn-label">▶ Play Game</span></a>
           </div>
         </div>
       </div>
 
       <!-- BACKYARD CHICKENS -->
-      <div class="game-card" style="--img-bg:#061408">
+      <div class="game-card" data-href="demo/backyard-chickens.html" style="--img-bg:#060d08">
         <div class="card-img">
-          <img class="real-img" src="" alt="Backyard Chickens Simulator" id="img-chicken" onerror="this.style.display:'none'">
+          <img class="real-img" src="" alt="Backyard Chickens" id="img-chicken" onerror="this.style.display='none'">
           <div class="fallback-art" id="fb-chicken">
             <svg width="120" height="120" viewBox="0 0 130 130" fill="none">
-              <circle cx="65" cy="50" r="18" fill="rgba(255,215,0,0.25)"/>
-              <circle cx="65" cy="50" r="12" fill="rgba(255,215,0,0.4)"/>
-              <ellipse cx="65" cy="92" rx="22" ry="16" fill="#f0e030"/>
-              <ellipse cx="50" cy="95" rx="11" ry="8" fill="#d4c020" transform="rotate(-12 50 95)"/>
-              <circle cx="65" cy="70" r="14" fill="#f0e030"/>
+              <circle cx="65" cy="50" r="16" fill="rgba(255,215,0,0.2)"/>
+              <circle cx="65" cy="50" r="10" fill="rgba(255,215,0,0.35)"/>
+              <ellipse cx="65" cy="92" rx="22" ry="16" fill="#e8d828"/>
+              <ellipse cx="50" cy="95" rx="11" ry="8" fill="#ccc018" transform="rotate(-12 50 95)"/>
+              <circle cx="65" cy="70" r="14" fill="#e8d828"/>
               <path d="M60 58 Q62 52 64 58 Q66 52 68 58" stroke="#ff4444" stroke-width="2.5" fill="none" stroke-linecap="round"/>
               <circle cx="68" cy="68" r="3" fill="white"/><circle cx="69" cy="68" r="1.5" fill="#333"/>
               <polygon points="71,71 77,73 71,75" fill="#ffaa00"/>
-              <ellipse cx="70" cy="77" rx="3" ry="3.5" fill="#ff4444"/>
               <line x1="57" y1="106" x2="52" y2="118" stroke="#ffaa00" stroke-width="3" stroke-linecap="round"/>
               <line x1="73" y1="106" x2="78" y2="118" stroke="#ffaa00" stroke-width="3" stroke-linecap="round"/>
-              <ellipse cx="28" cy="108" rx="8" ry="9" fill="rgba(255,240,200,0.85)"/>
-              <rect x="92" y="90" width="26" height="24" rx="2" fill="#8d5524" opacity="0.5"/>
-              <rect x="94" y="86" width="22" height="7" rx="1" fill="#a0622d" opacity="0.5"/>
+              <ellipse cx="28" cy="108" rx="8" ry="9" fill="rgba(255,240,200,0.75)"/>
             </svg>
           </div>
         </div>
@@ -276,31 +443,29 @@ footer { position:relative; z-index:1; border-top:1px solid rgba(192,21,42,0.15)
             <span class="card-platform">Browser</span>
           </div>
           <div class="card-actions">
-            <a href="backyard-chickens.html" class="btn-details">Details</a>
-            <a href="javascript:void(0)" class="btn-play" onclick="openGame('Backyard Chickens Simulator')"><span class="btn-label">▶ Play Game</span></a>
+            <a href="javascript:void(0)" class="btn-play" onclick="event.stopPropagation(); openGame('Backyard Chickens Simulator')"><span class="btn-label">▶ Play Game</span></a>
           </div>
         </div>
       </div>
 
       <!-- WORD RINGS -->
-      <div class="game-card" style="--img-bg:#00081a">
+      <div class="game-card" data-href="demo/word-rings.html" style="--img-bg:#06080f">
         <div class="card-img">
-          <img class="real-img" src="" alt="Word Rings" id="img-words" onerror="this.style.display:'none'">
+          <img class="real-img" src="" alt="Word Rings" id="img-words" onerror="this.style.display='none'">
           <div class="fallback-art" id="fb-words">
             <svg width="120" height="120" viewBox="0 0 130 130" fill="none">
-              <circle cx="65" cy="65" r="58" stroke="rgba(0,150,255,0.3)" stroke-width="2.5" stroke-dasharray="7 4"/>
-              <circle cx="65" cy="65" r="40" stroke="rgba(0,229,204,0.45)" stroke-width="2.5" stroke-dasharray="5 4"/>
-              <circle cx="65" cy="65" r="22" stroke="rgba(255,255,255,0.3)" stroke-width="2.5" stroke-dasharray="3 4"/>
-              <circle cx="65" cy="65" r="7" fill="rgba(0,229,204,0.7)"/>
-              <text x="65" y="11" text-anchor="middle" fill="rgba(0,150,255,0.9)" font-family="monospace" font-weight="bold" font-size="12">W</text>
-              <text x="122" y="67" text-anchor="middle" fill="rgba(0,150,255,0.9)" font-family="monospace" font-weight="bold" font-size="12">O</text>
-              <text x="65" y="125" text-anchor="middle" fill="rgba(0,150,255,0.9)" font-family="monospace" font-weight="bold" font-size="12">R</text>
-              <text x="8" y="67" text-anchor="middle" fill="rgba(0,150,255,0.9)" font-family="monospace" font-weight="bold" font-size="12">D</text>
-              <text x="65" y="29" text-anchor="middle" fill="rgba(0,229,204,0.9)" font-family="monospace" font-weight="bold" font-size="10">R</text>
-              <text x="101" y="67" text-anchor="middle" fill="rgba(0,229,204,0.9)" font-family="monospace" font-weight="bold" font-size="10">I</text>
-              <text x="65" y="106" text-anchor="middle" fill="rgba(0,229,204,0.9)" font-family="monospace" font-weight="bold" font-size="10">N</text>
-              <text x="29" y="67" text-anchor="middle" fill="rgba(0,229,204,0.9)" font-family="monospace" font-weight="bold" font-size="10">G</text>
-              <text x="65" y="48" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-family="monospace" font-weight="bold" font-size="9">S</text>
+              <circle cx="65" cy="65" r="56" stroke="rgba(68,136,255,0.25)" stroke-width="2" stroke-dasharray="7 4"/>
+              <circle cx="65" cy="65" r="38" stroke="rgba(68,136,255,0.35)" stroke-width="2" stroke-dasharray="5 4"/>
+              <circle cx="65" cy="65" r="20" stroke="rgba(68,136,255,0.45)" stroke-width="2" stroke-dasharray="3 4"/>
+              <circle cx="65" cy="65" r="7" fill="rgba(68,136,255,0.7)"/>
+              <text x="65" y="12" text-anchor="middle" fill="rgba(68,136,255,0.85)" font-family="monospace" font-weight="bold" font-size="12">W</text>
+              <text x="120" y="68" text-anchor="middle" fill="rgba(68,136,255,0.85)" font-family="monospace" font-weight="bold" font-size="12">O</text>
+              <text x="65" y="123" text-anchor="middle" fill="rgba(68,136,255,0.85)" font-family="monospace" font-weight="bold" font-size="12">R</text>
+              <text x="10" y="68" text-anchor="middle" fill="rgba(68,136,255,0.85)" font-family="monospace" font-weight="bold" font-size="12">D</text>
+              <text x="65" y="30" text-anchor="middle" fill="rgba(100,180,255,0.85)" font-family="monospace" font-weight="bold" font-size="10">R</text>
+              <text x="100" y="68" text-anchor="middle" fill="rgba(100,180,255,0.85)" font-family="monospace" font-weight="bold" font-size="10">I</text>
+              <text x="65" y="104" text-anchor="middle" fill="rgba(100,180,255,0.85)" font-family="monospace" font-weight="bold" font-size="10">N</text>
+              <text x="30" y="68" text-anchor="middle" fill="rgba(100,180,255,0.85)" font-family="monospace" font-weight="bold" font-size="10">G</text>
             </svg>
           </div>
         </div>
@@ -313,8 +478,7 @@ footer { position:relative; z-index:1; border-top:1px solid rgba(192,21,42,0.15)
             <span class="card-platform">Browser</span>
           </div>
           <div class="card-actions">
-            <a href="word-rings.html" class="btn-details">Details</a>
-            <a href="javascript:void(0)" class="btn-play" onclick="openGame('Word Rings')"><span class="btn-label">▶ Play Game</span></a>
+            <a href="javascript:void(0)" class="btn-play" onclick="event.stopPropagation(); openGame('Word Rings')"><span class="btn-label">▶ Play Game</span></a>
           </div>
         </div>
       </div>
@@ -323,20 +487,95 @@ footer { position:relative; z-index:1; border-top:1px solid rgba(192,21,42,0.15)
   </div>
 </div>
 
+<!-- ====== PROCESS ====== -->
+<div id="process">
+  <div class="process-inner">
+    <div class="sec-label">How I Work</div>
+    <h2 class="sec-heading" style="font-family:'Orbitron',monospace;font-size:clamp(1.5rem,2.5vw,2.1rem);font-weight:700;color:var(--white);line-height:1.25;">From idea to<br>playable game.</h2>
+    <div class="process-grid">
+      <div class="process-step">
+        <div class="step-dot"></div>
+        <div class="step-num">01</div>
+        <div class="step-title">Concept & Scope</div>
+        <div class="step-desc">Understanding what the game is, what makes it fun, and what's realistic to build. Getting the core mechanic right first.</div>
+      </div>
+      <div class="process-step">
+        <div class="step-dot"></div>
+        <div class="step-num">02</div>
+        <div class="step-title">Prototype</div>
+        <div class="step-desc">Building a rough playable version fast. Finding the problems early and figuring out what actually works.</div>
+      </div>
+      <div class="process-step">
+        <div class="step-dot"></div>
+        <div class="step-num">03</div>
+        <div class="step-title">Build & Iterate</div>
+        <div class="step-desc">Developing the full game with regular feedback loops. Systems, UI, content — built and tested in layers.</div>
+      </div>
+      <div class="process-step">
+        <div class="step-dot"></div>
+        <div class="step-num">04</div>
+        <div class="step-title">Ship</div>
+        <div class="step-desc">Polishing and releasing. Making sure the game runs well, feels good, and is ready for real players.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== CONTACT ====== -->
+<div id="contact">
+  <div class="contact-inner">
+    <div class="contact-text">
+      <h2>Got a game<br>in mind? <span>Let's talk.</span></h2>
+      <p>Whether it's a full project or just an early idea — feel free to reach out. I work on games and web projects and I'm always open to hearing what people are building.</p>
+    </div>
+    <div class="contact-links">
+      <a href="mailto:contact@tpro.dev" class="contact-link">
+        <span class="contact-link-icon">✉️</span>
+        <div>
+          <div class="contact-link-label">Email</div>
+          <div class="contact-link-val">contact@tpro.dev</div>
+        </div>
+      </a>
+      <a href="#" class="contact-link">
+        <span class="contact-link-icon">💬</span>
+        <div>
+          <div class="contact-link-label">Discord</div>
+          <div class="contact-link-val">tpro_dev</div>
+        </div>
+      </a>
+      <a href="#" class="contact-link">
+        <span class="contact-link-icon">🐙</span>
+        <div>
+          <div class="contact-link-label">GitHub</div>
+          <div class="contact-link-val">github.com/tpro</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ====== FOOTER ====== -->
 <footer>
-  <div class="footer-logo">TPRO</div>
-  <div class="footer-text">Independent Developer</div>
-  <div class="footer-text">All games free</div>
+  <div class="footer-logo">T<span>PRO</span></div>
+  <div class="footer-center">Game Developer · All games free</div>
+  <div class="footer-credit">Site by <a href="#" target="_blank">3djester</a></div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-// Cursor
-const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
-document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';});
-document.addEventListener('mousedown',()=>cur.style.transform='translate(-50%,-50%) scale(2)');
+<script>
+// ── CURSOR ──
+const cur=document.getElementById('cursor'),cring=document.getElementById('cursor-ring');
+document.addEventListener('mousemove',e=>{
+  cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';
+  cring.style.left=e.clientX+'px';cring.style.top=e.clientY+'px';
+});
+document.addEventListener('mousedown',()=>cur.style.transform='translate(-50%,-50%) scale(2.2)');
 document.addEventListener('mouseup',()=>cur.style.transform='translate(-50%,-50%) scale(1)');
+document.querySelectorAll('a,button,.game-card,.stack-tag,.tech-pill').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cur.classList.add('hovered'));
+  el.addEventListener('mouseleave',()=>cur.classList.remove('hovered'));
+});
 
-// Modal
+// ── MODAL ──
 function openGame(name){
   document.getElementById('modal-game-name').textContent=name;
   document.getElementById('play-modal').classList.add('open');
@@ -345,26 +584,110 @@ function closeModal(){document.getElementById('play-modal').classList.remove('op
 document.getElementById('play-modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
 
-// Show/hide fallback based on whether real image loaded
+// ── CARD CLICK → navigate ──
+document.querySelectorAll('.game-card').forEach(card=>{
+  card.addEventListener('click',e=>{
+    if(e.target.closest('.btn-play'))return;
+    const href=card.getAttribute('data-href');
+    if(href)window.location.href=href;
+  });
+});
+
+// ── IMAGE FALLBACK ──
 ['ninja','chicken','words'].forEach(id=>{
   const img=document.getElementById('img-'+id);
   const fb=document.getElementById('fb-'+id);
-  if(img){
-    if(!img.getAttribute('src')||img.getAttribute('src')===''){img.style.display='none';return;}
-    img.onload=()=>{if(fb)fb.style.display='none';};
-    img.onerror=()=>{img.style.display='none';};
-  }
+  if(!img||!img.src||img.src===window.location.href){if(img)img.style.display='none';return;}
+  img.onload=()=>{if(fb)fb.style.display='none';};
+  img.onerror=()=>{img.style.display='none';};
 });
 
-// Image show/hide fallback
-// BG canvas
+// ── FLOATING GAMING ICONS ──
+const floatLayer=document.getElementById('float-layer');
+// SVG game icons: controller buttons, D-pad, controller silhouette, etc.
+const icons=[
+  // ✕ button
+  {svg:`<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.5" fill="none"/><line x1="11" y1="11" x2="21" y2="21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="21" y1="11" x2="11" y2="21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>`,color:'rgba(100,140,255,0.45)'},
+  // ○ button
+  {svg:`<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="16" cy="16" r="7" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>`,color:'rgba(255,80,80,0.35)'},
+  // △ button
+  {svg:`<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.5" fill="none"/><polygon points="16,8 24,24 8,24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg>`,color:'rgba(80,200,120,0.35)'},
+  // □ button
+  {svg:`<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="10" y="10" width="12" height="12" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>`,color:'rgba(220,160,255,0.35)'},
+  // D-pad
+  {svg:`<svg width="36" height="36" viewBox="0 0 36 36" fill="none"><rect x="12" y="2" width="12" height="32" rx="3" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="2" y="12" width="32" height="12" rx="3" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>`,color:'rgba(255,255,255,0.18)'},
+  // Controller outline
+  {svg:`<svg width="52" height="34" viewBox="0 0 52 34" fill="none"><path d="M4 12 Q2 8 6 6 L14 4 Q18 2 20 6 L20 16 Q20 20 26 20 Q32 20 32 16 L32 6 Q34 2 38 4 L46 6 Q50 8 48 12 L44 26 Q42 30 38 30 L14 30 Q10 30 8 26 Z" stroke="currentColor" stroke-width="1.5" fill="none"/><line x1="10" y1="14" x2="10" y2="20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="7" y1="17" x2="13" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="38" cy="14" r="2.5" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="44" cy="14" r="2.5" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="41" cy="11" r="2.5" stroke="currentColor" stroke-width="1.2" fill="none"/><circle cx="41" cy="17" r="2.5" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>`,color:'rgba(180,100,255,0.28)'},
+  // Star
+  {svg:`<svg width="28" height="28" viewBox="0 0 28 28" fill="none"><polygon points="14,2 17,10 26,10 19,16 22,24 14,19 6,24 9,16 2,10 11,10" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg>`,color:'rgba(255,210,50,0.3)'},
+  // Pixel heart
+  {svg:`<svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 24 L4 14 Q2 8 8 6 Q12 4 14 10 Q16 4 20 6 Q26 8 24 14 Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg>`,color:'rgba(255,80,120,0.3)'},
+  // Coin
+  {svg:`<svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5" fill="none"/><text x="14" y="19" text-anchor="middle" fill="currentColor" font-size="12" font-weight="bold" font-family="monospace">$</text></svg>`,color:'rgba(255,200,40,0.3)'},
+  // Sword
+  {svg:`<svg width="30" height="30" viewBox="0 0 30 30" fill="none"><line x1="5" y1="25" x2="25" y2="5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="18" y1="18" x2="22" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="5" cy="25" r="2.5" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>`,color:'rgba(200,220,255,0.25)'},
+];
+
+function spawnIcon(){
+  const ic=icons[Math.floor(Math.random()*icons.length)];
+  const el=document.createElement('div');
+  el.className='float-icon';
+  el.innerHTML=ic.svg;
+  el.style.cssText=`
+    left:${Math.random()*100}vw;
+    bottom:-60px;
+    color:${ic.color};
+    animation-duration:${10+Math.random()*16}s;
+    animation-delay:${Math.random()*2}s;
+    transform:scale(${0.7+Math.random()*0.8});
+  `;
+  el.style.filter=`drop-shadow(0 0 6px ${ic.color})`;
+  floatLayer.appendChild(el);
+  el.addEventListener('animationend',()=>el.remove());
+}
+// Spawn icons at random intervals
+setInterval(spawnIcon, 800);
+// Pre-seed a few
+for(let i=0;i<8;i++){
+  setTimeout(()=>{
+    const ic=icons[Math.floor(Math.random()*icons.length)];
+    const el=document.createElement('div');
+    el.className='float-icon';
+    el.innerHTML=ic.svg;
+    el.style.cssText=`left:${Math.random()*100}vw;bottom:${Math.random()*100}vh;color:${ic.color};animation-duration:${12+Math.random()*14}s;animation-delay:0s;transform:scale(${0.6+Math.random()*0.9});`;
+    el.style.filter=`drop-shadow(0 0 5px ${ic.color})`;
+    floatLayer.appendChild(el);
+    el.addEventListener('animationend',()=>el.remove());
+  }, i*400);
+}
+
+// ── BG CANVAS — subtle particle web ──
 const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');
-function rsz(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}rsz();window.addEventListener('resize',rsz);
-const pts=Array.from({length:65},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,r:Math.random()*1.6+.4,op:Math.random()*.35+.04}));
+function rsz(){canvas.width=innerWidth;canvas.height=innerHeight;}rsz();
+window.addEventListener('resize',rsz);
+const pts=Array.from({length:55},()=>({
+  x:Math.random()*innerWidth,y:Math.random()*innerHeight,
+  vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,
+  r:Math.random()*1.4+.3,op:Math.random()*.25+.04,
+  hue:Math.random()>0.7?220:350
+}));
 function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>canvas.width)p.vx*=-1;if(p.y<0||p.y>canvas.height)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(192,21,42,${p.op})`;ctx.fill();});
-  pts.forEach((p,i)=>pts.slice(i+1).forEach(p2=>{const d=Math.hypot(p.x-p2.x,p.y-p2.y);if(d<110){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p2.x,p2.y);ctx.strokeStyle=`rgba(192,21,42,${.055*(1-d/110)})`;ctx.lineWidth=.5;ctx.stroke();}}));
+  pts.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>canvas.width)p.vx*=-1;
+    if(p.y<0||p.y>canvas.height)p.vy*=-1;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`hsla(${p.hue},70%,60%,${p.op})`;ctx.fill();
+  });
+  pts.forEach((p,i)=>pts.slice(i+1).forEach(p2=>{
+    const d=Math.hypot(p.x-p2.x,p.y-p2.y);
+    if(d<100){
+      ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p2.x,p2.y);
+      ctx.strokeStyle=`rgba(255,255,255,${.03*(1-d/100)})`;
+      ctx.lineWidth=.4;ctx.stroke();
+    }
+  }));
   requestAnimationFrame(draw);
 }
 draw();
