@@ -91,10 +91,9 @@ def record_site(url):
                 headless=False,
                 args=[
                     f"--window-size={RESOLUTION[0]},{RESOLUTION[1]}",
-                    "--start-maximized",
                     "--no-sandbox",
                     "--disable-dev-shm-usage",
-                    f"--app={url}",  # app mode: no toolbar, no address bar
+                    "--kiosk",              # fullscreen, no toolbar, no address bar
                 ],
                 env=env
             )
@@ -102,13 +101,13 @@ def record_site(url):
                 viewport={"width": RESOLUTION[0], "height": RESOLUTION[1]}
             )
             page = context.new_page()
-            page.wait_for_load_state("networkidle")
+            page.goto(url, wait_until="networkidle", timeout=30000)
             time.sleep(2)
 
             total_height = page.evaluate("document.body.scrollHeight")
             print(f"[*] Page height: {total_height}px | Viewport: {RESOLUTION[1]}px")
 
-            # Kick off a smooth continuous scroll in JS for the full duration
+            # Smooth continuous scroll via JS requestAnimationFrame
             page.evaluate(f"""
                 () => {{
                     const totalHeight = document.body.scrollHeight - window.innerHeight;
@@ -126,7 +125,7 @@ def record_site(url):
                 }}
             """)
 
-            # While JS scrolls, take screenshots at intervals from Python
+            # Take screenshots at intervals while JS scrolls
             screenshot_count = 0
             next_screenshot_time = 0
             start_time = time.time()
