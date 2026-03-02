@@ -93,7 +93,7 @@ def record_site(url):
                     f"--window-size={RESOLUTION[0]},{RESOLUTION[1]}",
                     "--no-sandbox",
                     "--disable-dev-shm-usage",
-                    "--kiosk",              # fullscreen, no toolbar, no address bar
+                    "--kiosk",
                 ],
                 env=env
             )
@@ -104,37 +104,30 @@ def record_site(url):
             page.goto(url, wait_until="networkidle", timeout=30000)
             time.sleep(2)
 
-            total_height = page.evaluate("document.body.scrollHeight")
-            print(f"[*] Page height: {total_height}px | Viewport: {RESOLUTION[1]}px")
+            total_height = page.evaluate("document.body.scrollHeight - window.innerHeight")
+            print(f"[*] Scrollable height: {total_height}px")
 
-            # Smooth continuous scroll via JS requestAnimationFrame
-            page.evaluate(f"""
-                () => {{
-                    const totalHeight = document.body.scrollHeight - window.innerHeight;
-                    const duration = {VIDEO_DURATION * 1000};
-                    const startTime = performance.now();
+            # Scroll every 100ms in exact increments — no JS animation, no jitter
+            tick = 0.1
+            total_ticks = int(VIDEO_DURATION / tick)
+            pixels_per_tick = total_height / total_ticks
 
-                    function step(now) {{
-                        const elapsed = now - startTime;
-                        const progress = Math.min(elapsed / duration, 1);
-                        window.scrollTo(0, totalHeight * progress);
-                        if (progress < 1) requestAnimationFrame(step);
-                    }}
-
-                    requestAnimationFrame(step);
-                }}
-            """)
-
-            # Take screenshots at intervals while JS scrolls
             screenshot_count = 0
             next_screenshot_time = 0
             start_time = time.time()
 
-            print(f"[*] Smooth scrolling over {VIDEO_DURATION}s, screenshot every {SCREENSHOT_INTERVAL}s...")
+            print(f"[*] Scrolling over {VIDEO_DURATION}s, screenshot every {SCREENSHOT_INTERVAL}s...")
 
-            while True:
+            for i in range(total_ticks):
+                step_start = time.time()
+
+                # Scroll to exact pixel position
+                target = int(pixels_per_tick * i)
+                page.evaluate(f"window.scrollTo(0, {target})")
+
                 elapsed = time.time() - start_time
 
+                # Take screenshot at interval
                 if elapsed >= next_screenshot_time:
                     screenshot_path = os.path.join(
                         SCREENSHOT_DIR,
@@ -145,12 +138,15 @@ def record_site(url):
                     screenshot_count += 1
                     next_screenshot_time += SCREENSHOT_INTERVAL
 
-                if elapsed >= VIDEO_DURATION:
-                    break
+                # Sleep for the remainder of the tick to stay on schedule
+                spent = time.time() - step_start
+                remaining = tick - spent
+                if remaining > 0:
+                    time.sleep(remaining)
 
-                time.sleep(0.1)
-
-            # Final screenshot at bottom
+            # Scroll to very bottom and take final screenshot
+            page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+            time.sleep(0.3)
             final_path = os.path.join(SCREENSHOT_DIR, f"screenshot_{screenshot_count:03d}_final.png")
             page.screenshot(path=final_path, full_page=False)
             print(f"  [+] Final screenshot -> {final_path}")
