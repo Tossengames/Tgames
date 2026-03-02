@@ -17,6 +17,7 @@ SCREENSHOT_DIR = os.path.join(OUTPUT_DIR, "screenshots")
 RESOLUTION = (1920, 1080)
 VIDEO_DURATION = 30
 SCREENSHOT_INTERVAL = 5
+SCROLL_STEPS = 20          # fewer steps = bigger jumps per step
 DISPLAY = ":99"
 
 
@@ -104,27 +105,19 @@ def record_site(url):
             page.goto(url, wait_until="networkidle", timeout=30000)
             time.sleep(2)
 
-            total_height = page.evaluate("document.body.scrollHeight - window.innerHeight")
-            print(f"[*] Scrollable height: {total_height}px")
+            total_height = page.evaluate("document.body.scrollHeight")
+            print(f"[*] Page height: {total_height}px")
 
-            # Scroll every 100ms in exact increments — no JS animation, no jitter
-            tick = 0.1
-            total_ticks = int(VIDEO_DURATION / tick)
-            pixels_per_tick = total_height / total_ticks
+            step_delay = VIDEO_DURATION / SCROLL_STEPS   # ~1.5s between each scroll jump
+            scroll_per_step = total_height / SCROLL_STEPS
 
             screenshot_count = 0
             next_screenshot_time = 0
             start_time = time.time()
 
-            print(f"[*] Scrolling over {VIDEO_DURATION}s, screenshot every {SCREENSHOT_INTERVAL}s...")
+            print(f"[*] Scrolling in {SCROLL_STEPS} steps over {VIDEO_DURATION}s ({int(scroll_per_step)}px per step)...")
 
-            for i in range(total_ticks):
-                step_start = time.time()
-
-                # Scroll to exact pixel position
-                target = int(pixels_per_tick * i)
-                page.evaluate(f"window.scrollTo(0, {target})")
-
+            for step in range(SCROLL_STEPS):
                 elapsed = time.time() - start_time
 
                 # Take screenshot at interval
@@ -138,13 +131,12 @@ def record_site(url):
                     screenshot_count += 1
                     next_screenshot_time += SCREENSHOT_INTERVAL
 
-                # Sleep for the remainder of the tick to stay on schedule
-                spent = time.time() - step_start
-                remaining = tick - spent
-                if remaining > 0:
-                    time.sleep(remaining)
+                # Jump to next position
+                target_scroll = int(scroll_per_step * (step + 1))
+                page.evaluate(f"window.scrollTo(0, {target_scroll})")
+                time.sleep(step_delay)
 
-            # Scroll to very bottom and take final screenshot
+            # Final screenshot at bottom
             page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
             time.sleep(0.3)
             final_path = os.path.join(SCREENSHOT_DIR, f"screenshot_{screenshot_count:03d}_final.png")
