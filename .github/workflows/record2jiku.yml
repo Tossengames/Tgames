@@ -1,4 +1,4 @@
-name: Record Website
+name: Record Website juku
 
 on:
   workflow_dispatch:
