@@ -1,0 +1,59 @@
+name: Record Website
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "URL of the website to record"
+        required: true
+        default: "https://yoursite.github.io"
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ runner.os }}
+
+      - name: Install Python dependencies
+        run: pip install playwright
+
+      - name: Install Playwright + deps (only if not cached)
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: |
+          playwright install chromium
+          playwright install-deps chromium
+
+      - name: Install system dependencies
+        run: sudo apt-get install -y xvfb ffmpeg
+
+      - name: Run recording script
+        run: python record.py "${{ github.event.inputs.url }}"
+
+      - name: Upload video artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-recording
+          path: output/recording.mp4
+          retention-days: 7
+
+      - name: Upload screenshots artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-screenshots
+          path: output/screenshots/
+          retention-days: 7
