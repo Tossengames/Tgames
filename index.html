@@ -7,16 +7,17 @@
 
 <style>
 /* ==========================================================================
-   TOKENS — Poster palette (orange / black / cream)
+   TOKENS — Poster palette (peachy orange / black / cream / white-on-orange)
    ========================================================================== */
 :root{
-  --bg:        #ff5a1f;
+  --bg:        #ffb98a;
   --bg-raised: #f6f1e6;
   --ink:       #0a0a0a;
   --ink-soft:  #3a2f22;
   --line:      #0a0a0a;
   --accent:    #ff5a1f;
-  --accent-soft: #ffd9c2;
+  --accent-soft: #ffe3cf;
+  --on-bg:     #ffffff;
   --serif: "Arial Black", Impact, sans-serif;
   --sans:  Arial, Helvetica, sans-serif;
   --radius: 0px;
@@ -64,6 +65,7 @@ header.site-header{
 }
 .nav-links{
   display:flex; gap:8px; list-style:none; margin:0; padding:0;
+  align-items:center;
 }
 .nav-links a{
   text-decoration:none; font-size:0.85rem; font-weight:bold; color:var(--bg-raised);
@@ -89,6 +91,31 @@ header.site-header{
   .nav-links a{ padding:14px 24px; width:100%; }
   .nav-toggle{ display:block; }
 }
+
+/* ==========================================================================
+   PERSISTENT SOCIAL + CV BAR (shows on every page, under the header)
+   ========================================================================== */
+.utility-bar{
+  background:var(--ink);
+  border-bottom:5px solid var(--accent);
+  padding:12px 0;
+}
+.utility-bar-in{
+  max-width:var(--maxw); margin:0 auto; padding:0 24px;
+  display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+}
+.social-btn{
+  display:inline-flex; align-items:center; gap:6px;
+  text-decoration:none; font-size:0.82rem; font-weight:bold; color:var(--ink);
+  border:2px solid var(--bg-raised); padding:8px 14px; background:var(--bg-raised);
+  text-transform:uppercase; letter-spacing:0.4px;
+  transition:background .15s, color .15s, transform .1s;
+}
+.social-btn:hover{ background:var(--accent); color:#fff; border-color:var(--accent); transform:translate(-2px,-2px); }
+.social-btn.cv-btn{
+  background:var(--accent); color:#fff; border-color:var(--accent); margin-left:auto;
+}
+.social-btn.cv-btn:hover{ background:var(--bg-raised); color:var(--ink); border-color:var(--bg-raised); }
 
 /* ==========================================================================
    PAGES (simple show/hide SPA-style navigation)
@@ -117,7 +144,8 @@ header.site-header{
   font-size:clamp(2.6rem, 9vw, 5.2rem);
   line-height:0.9;
   margin-bottom:10px;
-  color:var(--ink);
+  color:var(--on-bg);
+  text-shadow: 2px 2px 0 var(--ink);
 }
 .hero .role{
   display:inline-block;
@@ -129,8 +157,14 @@ header.site-header{
   text-transform:uppercase; letter-spacing:0.5px;
 }
 .hero .tagline{
-  max-width:58ch; color:var(--ink); font-size:1.05rem; font-weight:600;
+  max-width:58ch; color:var(--on-bg); font-size:1.05rem; font-weight:600;
+  text-shadow: 1px 1px 0 rgba(10,10,10,0.35);
 }
+.hero-bio{
+  max-width:62ch; color:var(--on-bg); font-size:1rem; margin-top:22px;
+  text-shadow: 1px 1px 0 rgba(10,10,10,0.35);
+}
+.hero-bio p{ margin-bottom:1em; font-weight:600; }
 .hero-actions{
   display:flex; gap:14px; margin-top:26px; flex-wrap:wrap;
 }
@@ -150,6 +184,9 @@ header.site-header{
   background:var(--bg-raised); color:var(--ink);
 }
 .btn-outline:hover{ background:var(--ink); color:var(--bg-raised); transform:translate(-2px,-2px); }
+.btn-big{
+  padding:22px 40px; font-size:1.15rem; border-width:4px;
+}
 .btn[disabled], .btn.disabled{
   opacity:0.55; cursor:default; pointer-events:none;
 }
@@ -159,8 +196,8 @@ header.site-header{
    ========================================================================== */
 section.block{ padding:56px 0; border-bottom:5px solid var(--ink); }
 .block-head{ margin-bottom:32px; }
-.block-head h2{ font-size:1.9rem; color:var(--ink); }
-.block-head .sub{ color:var(--ink); margin-top:8px; font-size:0.97rem; font-weight:600; opacity:0.75; }
+.block-head h2{ font-size:1.9rem; color:var(--on-bg); text-shadow: 2px 2px 0 var(--ink); }
+.block-head .sub{ color:var(--on-bg); margin-top:8px; font-size:0.97rem; font-weight:600; opacity:0.9; text-shadow: 1px 1px 0 rgba(10,10,10,0.3); }
 
 /* ==========================================================================
    PROJECT GRID + CARDS
@@ -193,7 +230,7 @@ section.block{ padding:56px 0; border-bottom:5px solid var(--ink); }
   background:repeating-linear-gradient(45deg, var(--accent-soft), var(--accent-soft) 10px, #ffd9c2cc 10px, #ffd9c2cc 20px);
 }
 .card-body{ padding:16px 18px 18px; flex:1; display:flex; flex-direction:column; }
-.card-body h3{ font-size:1.1rem; margin-bottom:6px; }
+.card-body h3{ font-size:1.1rem; margin-bottom:6px; color:var(--ink); }
 .card-body .meta{
   font-size:0.75rem; color:var(--bg-raised); background:var(--ink);
   display:inline-block; padding:3px 8px; margin-bottom:10px;
@@ -217,17 +254,18 @@ section.block{ padding:56px 0; border-bottom:5px solid var(--ink); }
    ========================================================================== */
 .detail-back{
   display:inline-flex; align-items:center; gap:6px;
-  text-decoration:none; color:var(--ink); font-size:0.9rem; font-weight:bold;
+  text-decoration:none; color:var(--on-bg); font-size:0.9rem; font-weight:bold;
   margin-bottom:28px; text-transform:uppercase; letter-spacing:0.4px;
+  text-shadow: 1px 1px 0 var(--ink);
 }
 .detail-back:hover{ text-decoration:underline; }
-.detail-head h1{ font-size:2.4rem; margin-bottom:10px; color:var(--ink); }
+.detail-head h1{ font-size:2.4rem; margin-bottom:10px; color:var(--on-bg); text-shadow: 2px 2px 0 var(--ink); }
 .detail-head .meta{
   display:inline-block; color:var(--bg-raised); background:var(--ink);
   font-family:var(--sans); font-weight:bold; font-size:0.85rem;
   padding:5px 12px; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.4px;
 }
-.detail-head .note{ color:var(--ink-soft); font-size:0.88rem; font-style:italic; margin-bottom:18px; font-weight:600; }
+.detail-head .note{ color:var(--on-bg); font-size:0.88rem; font-style:italic; margin-bottom:18px; font-weight:600; text-shadow: 1px 1px 0 rgba(10,10,10,0.4); }
 
 .detail-gallery{
   display:grid;
@@ -242,8 +280,9 @@ section.block{ padding:56px 0; border-bottom:5px solid var(--ink); }
 .detail-gallery img:hover{ transform:translate(-2px,-2px); }
 
 .detail-desc{
-  max-width:70ch; font-size:1rem; color:var(--ink);
+  max-width:70ch; font-size:1rem; color:var(--on-bg);
   white-space:pre-line;
+  text-shadow: 1px 1px 0 rgba(10,10,10,0.4);
 }
 .detail-desc p{ margin-bottom:1.1em; }
 
@@ -269,23 +308,23 @@ section.block{ padding:56px 0; border-bottom:5px solid var(--ink); }
 .lightbox img{ max-width:100%; max-height:90vh; border:4px solid var(--accent); }
 .lightbox-close{
   position:absolute; top:20px; right:26px;
-  background:var(--accent); border:none; color:var(--ink); font-size:1.6rem; line-height:1;
+  background:var(--accent); border:none; color:#fff; font-size:1.6rem; line-height:1;
   width:40px; height:40px;
   font-weight:bold;
 }
 
 /* ==========================================================================
-   ABOUT PAGE
+   ABOUT PAGE — simplified, big CV button, no text dump
    ========================================================================== */
-.about-text{ max-width:68ch; white-space:pre-line; font-size:1.02rem; color:var(--ink); }
-.about-text p{ margin-bottom:1.2em; }
-.cv-box{
-  background:var(--bg-raised); border:4px solid var(--ink);
-  border-radius:var(--radius); padding:26px 28px; margin-top:16px;
-  max-width:68ch; white-space:pre-line; font-size:0.92rem; color:var(--ink-soft);
+.about-cv-block{
+  text-align:center; padding:70px 24px;
 }
-.cv-note{
-  font-size:0.85rem; color:var(--ink); opacity:0.7; margin-top:10px; font-weight:600;
+.about-cv-block h2{
+  font-size:2rem; color:var(--on-bg); text-shadow: 2px 2px 0 var(--ink); margin-bottom:14px;
+}
+.about-cv-block p{
+  color:var(--on-bg); font-weight:600; margin-bottom:30px; max-width:50ch; margin-left:auto; margin-right:auto;
+  text-shadow: 1px 1px 0 rgba(10,10,10,0.4);
 }
 
 /* ==========================================================================
@@ -308,6 +347,13 @@ section.block{ padding:56px 0; border-bottom:5px solid var(--ink); }
    FOOTER
    ========================================================================== */
 footer{ padding:30px 0; color:var(--bg-raised); font-size:0.85rem; background:var(--ink); font-weight:600; }
+.footer-cv{
+  display:inline-flex; align-items:center; gap:8px;
+  color:var(--accent); text-decoration:none; font-weight:bold;
+  border:2px solid var(--accent); padding:8px 16px; margin-top:14px;
+  text-transform:uppercase; letter-spacing:0.4px; font-size:0.8rem;
+}
+.footer-cv:hover{ background:var(--accent); color:#fff; }
 
 /* ==========================================================================
    UTIL
@@ -330,6 +376,13 @@ footer{ padding:30px 0; color:var(--bg-raised); font-size:0.85rem; background:va
   </nav>
 </header>
 
+<!-- Persistent social + CV bar, shown on every page -->
+<div class="utility-bar">
+  <div class="utility-bar-in" id="utilityBar">
+    <!-- populated by JS from socialLinks + siteInfo.cvPdfLink -->
+  </div>
+</div>
+
 <!-- ============================== HOME ============================== -->
 <main id="page-home" class="page active">
   <div class="wrap">
@@ -338,9 +391,10 @@ footer{ padding:30px 0; color:var(--bg-raised); font-size:0.85rem; background:va
       <h1 id="heroName">Tossen</h1>
       <div class="role" id="heroRole">Unity Developer / C# Programmer</div>
       <p class="tagline" id="heroTagline">Solo Unity developer building stealth, action and puzzle games from the ground up.</p>
+      <div class="hero-bio" id="heroBio"></div>
       <div class="hero-actions">
         <a href="#projects" class="btn btn-primary" onclick="goTo('projects')">See the projects</a>
-        <a href="#" class="btn btn-outline" id="cvBtnHome" style="display:none;">Download CV</a>
+        <a href="#" class="btn btn-outline" id="cvBtnHome" style="display:none;" target="_blank" rel="noopener">Download CV</a>
       </div>
     </section>
 
@@ -426,18 +480,11 @@ footer{ padding:30px 0; color:var(--bg-raised); font-size:0.85rem; background:va
 <!-- ============================== ABOUT ============================== -->
 <main id="page-about" class="page">
   <div class="wrap">
-    <section class="block" style="border-bottom:none;">
-      <div class="block-head">
-        <h2>About me</h2>
-      </div>
-      <div class="about-text" id="aboutText"></div>
-
-      <div class="block-head" style="margin-top:40px;">
-        <h2>Resume / CV</h2>
-      </div>
-      <a href="#" class="btn btn-primary" id="cvBtnAbout" style="display:none;">Download CV (PDF)</a>
-      <div class="cv-note" id="cvComingSoon" style="display:none;">CV download coming soon — full details below in the meantime.</div>
-      <div class="cv-box" id="cvText"></div>
+    <section class="about-cv-block">
+      <h2>Resume / CV</h2>
+      <p>Full experience, skills, and project history in one document.</p>
+      <a href="#" class="btn btn-primary btn-big" id="cvBtnAbout" style="display:none;" target="_blank" rel="noopener">Download CV (PDF)</a>
+      <div class="cv-note" id="cvComingSoon" style="display:none; color:var(--on-bg); font-weight:600; text-shadow:1px 1px 0 rgba(10,10,10,0.4);">CV download coming soon.</div>
     </section>
   </div>
 </main>
@@ -461,6 +508,7 @@ footer{ padding:30px 0; color:var(--bg-raised); font-size:0.85rem; background:va
 <footer>
   <div class="wrap">
     <div id="footerText">&copy; Tossen — Unity Developer / C# Programmer</div>
+    <a href="#" class="footer-cv" id="cvBtnFooter" style="display:none;" target="_blank" rel="noopener">Download CV</a>
   </div>
 </footer>
 
@@ -483,8 +531,6 @@ const ASSET_PATH = "assets/"; // change this if your images folder moves
 function imgSrc(filename){ return ASSET_PATH + filename; }
 
 function youtubeId(url){
-  // Handles youtu.be, youtube.com/watch?v=, m.youtube.com, and /shorts/ links,
-  // with or without extra query params after the ID.
   const patterns = [
     /youtu\.be\/([A-Za-z0-9_-]{6,})/,
     /youtube\.com\/watch\?v=([A-Za-z0-9_-]{6,})/,
@@ -512,12 +558,26 @@ function findProject(id){
   return allProjectsFlat().find(p=>p.id===id);
 }
 
+/* Given a list of candidate filenames, return only the ones that actually
+   load. This lets data.js list up to 6 image slots per project even before
+   all 6 files are uploaded — any missing file is silently skipped instead
+   of showing a broken image icon. Once you upload the file with the exact
+   name already listed in data.js, it will start appearing automatically. */
+function resolveExistingImages(filenames){
+  return Promise.all(filenames.map(f => new Promise(resolve => {
+    const test = new Image();
+    test.onload = () => resolve(f);
+    test.onerror = () => resolve(null);
+    test.src = imgSrc(f);
+  }))).then(results => results.filter(Boolean));
+}
+
 /* ==========================================================================
    CARD RENDERING
    ========================================================================== */
 function projectCard(p){
   const imgHtml = (p.images && p.images.length)
-    ? `<img src="${imgSrc(p.images[0])}" alt="${p.title}" loading="lazy">`
+    ? `<img src="${imgSrc(p.images[0])}" alt="${p.title}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=&quot;no-img&quot;>Tossen</div>'">`
     : `<div class="no-img">Tossen</div>`;
 
   return `
@@ -537,7 +597,6 @@ function renderGrids(){
   document.getElementById("grid-prototypes").innerHTML = projects.prototypes.map(projectCard).join("");
   document.getElementById("grid-other").innerHTML = projects.other.map(projectCard).join("");
 
-  // home preview: first 3 published + first prototype/itch highlight, fallback to whatever exists
   const preview = [
     ...projects.published.slice(0,2),
     ...projects.itch.slice(0,1),
@@ -564,24 +623,27 @@ function openProject(id){
     noteEl.style.display = "none";
   }
 
-  // gallery — shows every image listed for the project (no cap; add as many
-  // filenames as you have, up to 6, in the images array in data.js)
   const galleryEl = document.getElementById("detailGallery");
   if(p.images && p.images.length){
-    galleryEl.style.display = "grid";
-    galleryEl.innerHTML = p.images.map(img=>
-      `<img src="${imgSrc(img)}" alt="${p.title}" onclick="openLightbox('${imgSrc(img)}')">`
-    ).join("");
+    galleryEl.innerHTML = "";
+    resolveExistingImages(p.images).then(existing => {
+      if(existing.length){
+        galleryEl.style.display = "grid";
+        galleryEl.innerHTML = existing.map(img=>
+          `<img src="${imgSrc(img)}" alt="${p.title}" onclick="openLightbox('${imgSrc(img)}')">`
+        ).join("");
+      } else {
+        galleryEl.style.display = "none";
+      }
+    });
   } else {
     galleryEl.style.display = "none";
     galleryEl.innerHTML = "";
   }
 
-  // description
   document.getElementById("detailDesc").innerHTML = (p.description || p.short || "")
     .split("\n\n").map(para=>`<p>${para}</p>`).join("");
 
-  // videos
   const videosEl = document.getElementById("detailVideos");
   if(p.videos && p.videos.length){
     videosEl.innerHTML = p.videos.map(v=>{
@@ -593,7 +655,6 @@ function openProject(id){
     videosEl.innerHTML = "";
   }
 
-  // links
   const linksEl = document.getElementById("detailLinks");
   let linksHtml = "";
   if(p.playLink){
@@ -619,7 +680,7 @@ function closeLightbox(e){
 }
 
 /* ==========================================================================
-   PAGE NAVIGATION (simple hash-based single page app)
+   PAGE NAVIGATION
    ========================================================================== */
 function goTo(pageName){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
@@ -636,7 +697,7 @@ function scrollToCat(id){
 }
 
 /* ==========================================================================
-   ROUTING (supports direct links like #project-itchp1)
+   ROUTING
    ========================================================================== */
 function handleHash(){
   const hash = window.location.hash.replace("#","");
@@ -649,32 +710,39 @@ function handleHash(){
 window.addEventListener("hashchange", handleHash);
 
 /* ==========================================================================
-   INIT — populate everything from data.js
+   INIT
    ========================================================================== */
 function init(){
-  // hero
   document.getElementById("heroName").textContent = siteInfo.name;
   document.getElementById("heroRole").textContent = siteInfo.title;
   document.getElementById("heroTagline").textContent = siteInfo.tagline;
   document.title = siteInfo.name + " — " + siteInfo.title;
 
-  // CV buttons — if a real PDF link is set, show the download button;
-  // otherwise show a "coming soon" note instead of hiding it completely.
+  if(siteInfo.heroBio){
+    document.getElementById("heroBio").innerHTML = siteInfo.heroBio
+      .split("\n\n").map(p=>`<p>${p}</p>`).join("");
+  }
+
+  const cvLinks = [
+    document.getElementById("cvBtnHome"),
+    document.getElementById("cvBtnAbout"),
+    document.getElementById("cvBtnFooter"),
+  ];
   if(siteInfo.cvPdfLink){
-    document.getElementById("cvBtnHome").style.display = "inline-flex";
-    document.getElementById("cvBtnHome").href = siteInfo.cvPdfLink;
-    document.getElementById("cvBtnAbout").style.display = "inline-flex";
-    document.getElementById("cvBtnAbout").href = siteInfo.cvPdfLink;
+    cvLinks.forEach(el => { el.style.display = "inline-flex"; el.href = siteInfo.cvPdfLink; });
     document.getElementById("cvComingSoon").style.display = "none";
   } else {
     document.getElementById("cvComingSoon").style.display = "block";
   }
-  document.getElementById("cvText").textContent = siteInfo.cvText;
 
-  // about
-  document.getElementById("aboutText").innerHTML = aboutText.split("\n\n").map(p=>`<p>${p}</p>`).join("");
+  let utilityHtml = socialLinks.map(s=>
+    `<a class="social-btn" href="${s.url}" target="_blank" rel="noopener">${s.name}</a>`
+  ).join("");
+  if(siteInfo.cvPdfLink){
+    utilityHtml += `<a class="social-btn cv-btn" href="${siteInfo.cvPdfLink}" target="_blank" rel="noopener">Download CV</a>`;
+  }
+  document.getElementById("utilityBar").innerHTML = utilityHtml;
 
-  // contact
   document.getElementById("emailLink").href = "mailto:" + siteInfo.email;
   document.getElementById("emailLink").textContent = siteInfo.email;
   document.getElementById("socialList").innerHTML = socialLinks.map(s=>
