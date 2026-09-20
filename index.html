@@ -488,10 +488,14 @@ const ASSET_PATH = "assets/"; // change this if your images folder moves
 function imgSrc(filename){ return ASSET_PATH + filename; }
 
 function youtubeId(url){
+  // Handles youtu.be, youtube.com/watch?v=, m.youtube.com, and /shorts/ links,
+  // with or without extra query params after the ID.
   const patterns = [
-    /youtu\.be\/([A-Za-z0-9_-]+)/,
-    /youtube\.com\/watch\?v=([A-Za-z0-9_-]+)/,
-    /m\.youtube\.com\/watch\?v=([A-Za-z0-9_-]+)/
+    /youtu\.be\/([A-Za-z0-9_-]{6,})/,
+    /youtube\.com\/watch\?v=([A-Za-z0-9_-]{6,})/,
+    /m\.youtube\.com\/watch\?v=([A-Za-z0-9_-]{6,})/,
+    /youtube\.com\/shorts\/([A-Za-z0-9_-]{6,})/,
+    /m\.youtube\.com\/shorts\/([A-Za-z0-9_-]{6,})/
   ];
   for(const p of patterns){
     const m = url.match(p);
