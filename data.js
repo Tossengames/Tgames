@@ -11,13 +11,14 @@
    2. Give it a unique "id" (no spaces, e.g. "itchp6").
    3. Fill in the fields. Leave a field as "" (empty) or [] (empty list) if
       you don't have it yet — the site will just skip showing it.
-   4. Upload your images to the "assets" folder on GitHub with the naming
-      pattern used below (e.g. playstorep1i1.png, playstorep1i2.png ...).
-   5. List those filenames in the "images" array, in the order you want them
-      to appear. Each project supports up to 6 images — just list as many
-      as you actually have, in order. The detail page gallery automatically
-      shows every image you list here, so if you only have 2 today, add the
-      other filenames later and they'll show up with no other changes needed.
+   4. Upload your images to the "assets" folder with the naming pattern used
+      below (e.g. playstorep1i1.png, playstorep1i2.png ...).
+   5. Every project below already lists 6 image slots (i1 through i6). You
+      do NOT need to remove the ones you haven't uploaded yet — the site
+      automatically checks each filename and only shows the ones that
+      actually exist in your assets folder. Upload a file with a name that
+      matches one already listed here, and it will appear on its own, no
+      other changes needed.
 
    IMPORTANT — FILE NAMES ARE CASE SENSITIVE ON GITHUB PAGES
    -------------------------
@@ -27,21 +28,19 @@
 
    IMAGE FILE NAMING
    -------------------------
-   assets/playstorep1i1.png   -> Play Store project 1, image 1
-   assets/playstorep1i2.png   -> Play Store project 1, image 2
-   assets/playstorep1i3.png   -> Play Store project 1, image 3 (and so on, up to i6)
-   assets/itchp1i1.png        -> Itch/prototype project 1, image 1
-   assets/protop1i1.png       -> Unreleased prototype project 1, image 1
-   assets/otherp1i1.png       -> Other project 1, image 1
+   assets/playstorep1i1.png ... assets/playstorep1i6.png  -> Play Store project 1, images 1-6
+   assets/itchp1i1.png ... assets/itchp1i6.png             -> Itch/prototype project 1, images 1-6
+   assets/protop1i1.png ... assets/protop1i6.png           -> Unreleased prototype project 1, images 1-6
+   assets/otherp1i1.png ... assets/otherp1i6.png           -> Other project 1, images 1-6
    All images live flat inside one "assets" folder, no subfolders.
    .png, .jpg, .jpeg and .gif all work — just make sure the extension you
-   write here matches the real file extension exactly.
+   write here matches the real file extension exactly (e.g. if you actually
+   have a .jpg, change the listed filename's extension to .jpg).
 
    VIDEO LINKS
    -------------------------
    Paste full YouTube links (any format: watch/youtu.be/m.youtube/shorts all
-   work now). Leave the array empty [] if there's no video yet. Order in the
-   list = order shown on the page, first one shows first.
+   work). Leave the array empty [] if there's no video yet.
 
    PLAYABLE / EXTERNAL LINKS
    -------------------------
@@ -55,90 +54,32 @@
 const siteInfo = {
   name: "Tossen",
   title: "Unity Developer / C# Programmer",
-  tagline: "C# programmer building games solo — third person and FPS titles in 3D, plus 2D games for mobile, PC and browser.",
+  tagline: "Solo Unity developer building stealth, action and puzzle games from the ground up.",
   email: "tossenpro@gmail.com",
 
-  /* CV placeholders - edit these whenever ready */
-  cvPdfLink: "",           // e.g. "https://www.dropbox.com/.../resume.pdf" — leave "" to show a "coming soon" note instead of the download button
+  /* Short bio shown right under the hero tagline on the homepage. */
+  heroBio: `Solo Unity developer with about a decade of experience building games from the first line of code to publishing. I have shipped several titles on Google Play and released prototypes on itch.io, handling everything myself: programming, gameplay systems, art, animation, sound, and optimization.
 
-  cvText: `TOSSEN
-Unity Developer / C# Programmer
-tossenpro@gmail.com | linkedin.com/in/tossen-pro-ab03871a9 | facebook.com/tossen.pro.3
+I build for the lowest end device first. That habit started in 2016 when the only phone I had to test on was a weak one, and it never left.`,
 
-PROFILE
-Solo Unity developer with about a decade of experience building games completely on my own, from first line of code to publishing. Shipped several titles on Google Play and released a handful of prototypes on itch.io, covering programming, gameplay systems, optimization, art, sound, and monetization. Currently developing a third person stealth action game set in feudal Japan alongside other prototypes.
-
-SKILLS
-Code: C#, Unity (2D/3D), gameplay systems, enemy AI, player controllers, UI, physics, save systems, JSON data handling
-Art & Animation: 2D sprites/VFX, 3D modeling, rigging, animation, animator state machines
-Monetization: Unity Ads, AdMob integration
-Web: HTML, JavaScript (browser game development)
-Platforms: Android, PC, Web
-
-PUBLISHED GAMES — GOOGLE PLAY
-
-Color Math 3 — Unity/C# | 2016
-First published game, and the one I learned Unity and C# on while building it. A match and slice puzzle game where the player cuts through same colored objects, 3 up to 5 at once for higher scores. Implemented Unity Ads and AdMob, and spent a lot of time getting it to run smoothly on weak phones, since that's what I had at the time — a habit of optimizing for the lowest end device that stuck with me since. No AI tools existed yet, so I worked through nearly every common Unity error by hand.
-
-Color Matching — Unity/C# | 2022
-Open ended color mixing sandbox. Player gets a target color and a canvas with the base colors, with full freedom to mix and experiment until they match it.
-
-Soccer Match 3 — Unity/C#
-Match-3 game in the style of Candy Crush with a soccer theme. Player picks a team and works toward winning the cup.
-
-ITCH.IO PROTOTYPES / BROWSER GAMES
-
-Ninja Maker — Unity/C#, browser
-Third person stealth action game where players can build their own stages, levels, and stories, then share them with the community — a level editor approach to a stealth ninja game. On hold pending funding.
-
-Midnight Racer — Unity/C# | 2022
-Arcade style car combat and racing game for PC, inspired by Twisted Metal. Currently versus and racing modes against AI, with local and online multiplayer planned.
-
-This Is Sparta — Unity/C# | 2022
-Physics based combat game. Player controls a Spartan warrior kicking enemies through a stage full of hazards and weapons to maximize damage.
-
-Words Ring / Words Fall — HTML/JS, browser | 2024
-Two word formation puzzle games: one where players rotate a ring of letters like an old rotary phone dial, another where letters fall and players tap to form words before they land.
-
-UNRELEASED PROTOTYPES
-
-Seigi no Ha (Blade of Justice) — working title | Unity/C# | 2016–2018, unfinished
-Third person stealth action game set in 16th century feudal Japan, inspired by the Tenchu series. Two playable characters, a male and female shinobi, with a GTA V style character switch mechanic. Built a custom focus targeting system inspired by Red Dead Redemption 2's Dead Eye, and a Hitman-style disguise system for blending in to gather information. On hold twice due to lack of funding; still hoping to finish it.
-
-2D Ninja Platformer — HTML/JS, browser
-2D stealth platformer built for the browser, with manually handled collision and movement and cross-device input support.
-
-OTHER PROJECTS
-Orbit — site teaching complete beginners the basics of C# for Unity development.
-Game Graveyard — platform for developers to showcase unfinished or cancelled games, where visitors vote on which ones they'd like to see revived or supported.
-
-EXPERIENCE
-Independent Game Developer — 2016 – Present
-Solo full cycle development across every published title and prototype: programming, art, audio, VFX, optimization, and publishing.
-
-AVAILABILITY
-Open to remote roles and freelance work.`
+  /* CV link — set to your public Google Drive PDF link. Once this is filled
+     in, the Download CV button appears everywhere: homepage, About page,
+     footer, and the persistent top bar on every page. */
+  cvPdfLink: "https://drive.google.com/file/d/1KX1E5Q4T5kSoDjAc7w9bO5dn9d4xqcgR/view?usp=sharing",
 };
 
 
 /* ---------- SOCIAL LINKS ---------- */
 /* Delete a line, or comment it out with // in front, to hide it.
-   Add a new one the same way: { name: "...", url: "..." } */
+   Add a new one the same way: { name: "...", url: "..." }
+   These show as buttons in the persistent top bar on every page, and also
+   listed on the Contact page. */
 
 const socialLinks = [
   { name: "Facebook", url: "https://www.facebook.com/tossen.pro.3" },
   { name: "LinkedIn", url: "https://www.linkedin.com/in/tossen-pro-ab03871a9" },
   // { name: "YouTube", url: "" },  // not active yet, uncomment and add link when ready
 ];
-
-
-/* ---------- ABOUT PAGE TEXT ---------- */
-
-const aboutText = `Solo Unity developer with about a decade of experience building games completely on my own, from first line of code to publishing. I've shipped several titles on Google Play and released a handful of prototypes on itch.io, covering everything from programming and gameplay systems to optimization, art, sound, and monetization.
-
-Right now I'm working on a third person stealth action game set in feudal Japan whenever I get the time and resources to push it forward.
-
-I handle every part of development myself: code, 2D and 3D art, animation, sound, and getting the thing actually published. That means a lot of self-taught problem solving along the way, from debugging Unity errors with no AI tools around back in 2016, to figuring out rigging and animation state machines from scratch, to squeezing performance out of weak phones because that's what I had to test on.`;
 
 
 /* ==========================================================================
@@ -155,14 +96,10 @@ const projects = {
       year: "2016",
       engine: "Unity / C#",
       short: "A match and slice puzzle game — my first ever published title.",
-      description: `This was my first published game, and honestly the game I learned Unity and C# on while I was making it. It's a match and slice puzzle game: you cut through objects of the same color, three up to five at once for a bigger score.
+      description: `My first published game, and the one I learned Unity and C# on while building it. It's a match and slice puzzle game: you cut through objects of the same color, three up to five at once for a bigger score.
 
-I implemented Unity Ads and AdMob myself, and spent a lot of time just getting it to run smoothly on weak phones, since that's what I had to test on at the time. That habit of optimizing for the lowest end device stuck with me ever since.
-
-There was no AI to help back then, so I worked through pretty much every common Unity error the hard way, over days sometimes. By the time it was published I'd learned a huge amount, not just about programming but about 2D art, VFX, SFX and music too, since I was doing all of it solo. Then I learned the other lesson every indie dev learns eventually: building the game is maybe 30% of the work. Getting people to actually find it and download it is the hard part.`,
-      // Add more filenames here as you have them — up to 6 total, e.g.:
-      // images: ["playstorep1i1.png", "playstorep1i2.png", "playstorep1i3.png", "playstorep1i4.png"],
-      images: ["playstorep1i1.png", "playstorep1i2.png"],
+No AI tools existed yet, so I worked through nearly every common Unity error by hand. I implemented Unity Ads and AdMob myself, and spent a lot of time getting it to run smoothly on weak phones, since that's what I had to test on at the time. That habit of optimizing for the lowest end device stuck with me since.`,
+      images: ["playstorep1i1.png", "playstorep1i2.png", "playstorep1i3.png", "playstorep1i4.png", "playstorep1i5.png", "playstorep1i6.png"],
       videos: ["https://youtu.be/_cSJ45uymVw"],
       playLink: "",
       note: "No longer live on the Play Store."
@@ -173,8 +110,10 @@ There was no AI to help back then, so I worked through pretty much every common 
       year: "2022",
       engine: "Unity / C#",
       short: "A free-form color mixing sandbox.",
-      description: `A color mixing game built around a canvas and a set of base colors. You're given a target color and full freedom to mix and experiment however you like until you match it.`,
-      images: ["playstorep3i1.png"],
+      description: `A color mixing game built around a canvas and a set of base colors. You're given a target color and full freedom to mix and experiment however you like until you match it.
+
+The whole game hinges on mixing colors, but digital color doesn't work like paint — mix blue and yellow on screen and you get gray, not green. That broke the entire concept early on. I built a custom mixing model with hand-tuned lookup tables for the color combinations that refused to cooperate. Level design and the color system had to be built together, since every target color had to actually be reachable through my mixing rules or the level would be unsolvable. I learned more about color math than I ever expected to.`,
+      images: ["playstorep3i1.png", "playstorep3i2.png", "playstorep3i3.png", "playstorep3i4.png", "playstorep3i5.png", "playstorep3i6.png"],
       videos: ["https://m.youtube.com/shorts/Mth6Jm3-Mlw"],
       playLink: "",
       note: "No longer live on the Play Store."
@@ -185,8 +124,10 @@ There was no AI to help back then, so I worked through pretty much every common 
       year: "",
       engine: "Unity / C#",
       short: "A soccer-themed match-3 game.",
-      description: `A match-3 game with the same core gameplay as something like Candy Crush, but themed around soccer, using balls instead of candy. You pick your team and work toward winning the cup.`,
-      images: ["playstorep4i1.png"],
+      description: `A match-3 game in the style of Candy Crush, themed around soccer, using balls instead of candy. You pick your team and work toward winning the cup.
+
+Two big problems shaped this one. First, the match-3 mechanic wasn't a straight clone of my other match game — chaining, cascades, and the soccer-specific objectives all needed their own logic. Second, I hand-designed 100 levels, each with its own goal, which was the single most time-consuming part of the whole project. I separated the board logic from the level objective system so goals could be swapped without touching the core match code, and built the UI to handle both landscape and portrait, since the board and HUD needed to reflow depending on orientation. Shipped on Google Play running on both orientations.`,
+      images: ["playstorep4i1.png", "playstorep4i2.png", "playstorep4i3.png", "playstorep4i4.png", "playstorep4i5.png", "playstorep4i6.png"],
       videos: [],
       playLink: "",
       note: "No longer live on the Play Store."
@@ -201,13 +142,15 @@ There was no AI to help back then, so I worked through pretty much every common 
       year: "",
       engine: "Unity / C# — browser",
       short: "A stealth game where players build and share their own levels.",
-      description: `A third person stealth action game, browser based, built around one idea: letting players create their own stages, levels and stories, then share them with everyone else. Basically a level editor for a stealth ninja game, so new content keeps coming from the community instead of just from me.
+      description: `A third person stealth action game, browser based, built around one idea: letting players create their own stages, levels, and stories, then share them with the community. Basically a stealth ninja game with a level editor built in.
 
-It's on hold right now until I can secure some funding to keep pushing it further.`,
-      images: ["itchp1i1.png"],
+For a prototype I had zero budget but still needed saving and sharing to work. I used local saves for player data, and hooked up Google Sheets and Docs as a free backend — when the game needs to load shared content, it calls the spreadsheet. It's a deliberate prototype-stage hack, with a real paid backend planned later, but it works and costs nothing right now.
+
+The editor itself had to be solid enough that player-built geometry wouldn't break the stealth systems, which was the real challenge — enemy pathing and cover had to work correctly on levels I never designed myself.`,
+      images: ["itchp1i1.png", "itchp1i2.png", "itchp1i3.png", "itchp1i4.png", "itchp1i5.png", "itchp1i6.png"],
       videos: [],
       playLink: "https://tossengames.itch.io/ninja-maker",
-      note: ""
+      note: "On hold pending funding."
     },
     {
       id: "itchp2",
@@ -215,11 +158,12 @@ It's on hold right now until I can secure some funding to keep pushing it furthe
       year: "2022",
       engine: "Unity / C#",
       short: "An arcade car combat and racing game for PC.",
-      description: `An arcade style car racing and fighting game for PC, inspired by the Twisted Metal series. The original idea had a story mode where you play through missions to save a city from an alien invasion, with local multiplayer and online play planned on top.
+      description: `An arcade style car racing and combat game for PC, inspired by Twisted Metal. This was my first vehicle game, so a lot of it was figured out as I went.
 
-That full vision isn't finished, so right now the playable prototype covers the versus and racing modes against AI. Lack of funding is what stopped it from going further, same story as a few of my other projects.`,
-      // Add more filenames here as you have them — up to 6 total.
-      images: ["itchp2i1.png", "itchp2i2.gif", "itchp2i3.gif"],
+The first big decision was realistic versus arcade driving. I went arcade, since realistic handling wasn't fun at this scale, and arcade let me tune for feel instead of simulation — I iterated on the car controller until it moved the way I wanted.
+
+I built the weapon system with aiming and shooting, enemy AI that actually races around the city instead of following a rail, the minimap, the city itself, the vehicles, the game modes, and both keyboard/mouse and controller input. VS mode took the most work: players grab a weapon box that gives a random weapon out of three, each with different strength, then drive around hunting each other — the AI is aggressive on purpose. Car engine SFX fought me the whole way and only came together properly near the end. The honest weak point is VFX, which never quite reached where I wanted, so it stayed at prototype level. There's also an unfinished mobile version.`,
+      images: ["itchp2i1.png", "itchp2i2.gif", "itchp2i3.gif", "itchp2i4.png", "itchp2i5.png", "itchp2i6.png"],
       videos: [],
       playLink: "https://millj.itch.io/midnightracer",
       note: ""
@@ -230,8 +174,10 @@ That full vision isn't finished, so right now the playable prototype covers the 
       year: "2022",
       engine: "Unity / C#",
       short: "A physics-based combat game starring a Spartan warrior.",
-      description: `A simple physics game where you play a Spartan warrior kicking enemies through a stage full of hurdles and dangerous weapons, trying to rack up as much damage as possible before their body stops moving.`,
-      images: ["itchp3i1.png"],
+      description: `A physics-based combat game where you control a Spartan warrior kicking enemies through a stage full of hazards and weapons to maximize damage.
+
+I modeled, rigged, and animated the 3D characters solo for this one, which was new territory for me. Playtesters then asked for dismemberment — bodies coming apart when hit — but the single-mesh characters couldn't do that. So I built a second version of each character split into separate body parts, activating or deactivating pieces as they get severed. It's a visual trick rather than real-time mesh cutting, which was far cheaper to run. Physics and ragdolls are expensive, so I had to keep the random behavior tightly optimized. VFX and SFX landed at an acceptable level for a prototype, not fully finished.`,
+      images: ["itchp3i1.png", "itchp3i2.png", "itchp3i3.png", "itchp3i4.png", "itchp3i5.png", "itchp3i6.png"],
       videos: ["https://youtu.be/uE2AS5c19kA?si=6PsjTctSnWWX-j6q"],
       playLink: "https://tossen.itch.io/this-is-sparta",
       note: ""
@@ -240,10 +186,12 @@ That full vision isn't finished, so right now the playable prototype covers the 
       id: "itchp4",
       title: "Words Ring",
       year: "2024",
-      engine: "Browser",
+      engine: "HTML / JavaScript — browser",
       short: "Rotate a ring of letters to form words and score points.",
-      description: `A word game where you rotate a ring of letters, like an old rotary phone dial, to spell out words and score points.`,
-      images: ["itchp4i1.png"],
+      description: `A word game where you rotate a ring of letters, like an old rotary phone dial, to spell out words and score points.
+
+Built in raw JavaScript with no engine. The main problem was getting it to fit the screen correctly across both mobile and PC, since what works on a phone breaks on desktop and vice versa. I built my own responsive scaling system so the canvas adapts per device.`,
+      images: ["itchp4i1.png", "itchp4i2.png", "itchp4i3.png", "itchp4i4.png", "itchp4i5.png", "itchp4i6.png"],
       videos: [],
       playLink: "https://tossengames.itch.io/wordrings",
       note: ""
@@ -252,10 +200,12 @@ That full vision isn't finished, so right now the playable prototype covers the 
       id: "itchp5",
       title: "Words Fall",
       year: "2024",
-      engine: "Browser",
+      engine: "HTML / JavaScript — browser",
       short: "Tap falling letters to form words before they land.",
-      description: `A word game where letters fall down the screen and you tap them in the right order to form words before they land.`,
-      images: ["itchp5i1.png"],
+      description: `A word game where letters fall down the screen and you tap them in the right order to form words before they land.
+
+Built alongside Words Ring, in raw JavaScript with no engine. Same core challenge here: getting it to scale and play correctly across phone and desktop, which meant building a responsive canvas system rather than relying on fixed dimensions.`,
+      images: ["itchp5i1.png", "itchp5i2.png", "itchp5i3.png", "itchp5i4.png", "itchp5i5.png", "itchp5i6.png"],
       videos: [],
       playLink: "",
       note: ""
@@ -270,13 +220,16 @@ That full vision isn't finished, so right now the playable prototype covers the 
       year: "2016 – 2018",
       engine: "Unity / C#",
       short: "An unfinished third person stealth action game set in feudal Japan.",
-      description: `A third person stealth action adventure set in 16th century feudal Japan, inspired by the Tenchu series. I also pulled in mechanics from a few other games I like: from GTA V I took the character switching idea, so you play with two characters, a male and a female ninja, and can switch between them to pull off different maneuvers. From Red Dead Redemption 2 I took inspiration from Dead Eye and built my own version I call Moon Eye. From Hitman I borrowed the idea of switching outfits to blend in while gathering information.
+      description: `A Tenchu-inspired stealth game set in 16th century feudal Japan. Two playable shinobi, one male and one female, with a GTA V style switch system so you can swap between them mid-mission.
 
-I had a lot more planned for this game, but between lack of support and funding I had to let it go. It started back in 2016, I picked it up again around 2018, then had to shelve it again. I'd love to bring it back and actually finish it if I could get the help and funding it needs.
+This project kept growing. I wanted an open world, which meant a lot of 3D objects everywhere, and that brought performance problems I'd never dealt with before. Unity's own culling wasn't enough — the world was too heavy, and nature assets were the worst offenders, with trees and foliage eating memory alive. So I built my own system that keeps characters active in logic but disables their rendering completely when they're out of view and far from the player. It took a while to get right, but together with LODs on most models, it actually ran.
 
-Working solo on something this size also meant running into the bigger challenges of 3D game development directly: modeling and rigging the two playable characters, building out animations and getting Unity's Animator state machines to blend between them properly, on top of writing enemy AI that could actually detect and react to a stealth player, and tuning the character controller itself to feel responsive.`,
-      // Add more filenames here as you have them — up to 6 total.
-      images: ["protop1i1.png", "protop1i2.png"],
+I built two climbing systems — one Assassin's Creed style, and a second, freer one that lets the ninja climb almost any wall, which I liked more. I also built a cover system that sticks to any wall or surface. For combat, I made a focus targeting system inspired by Red Dead Redemption 2's Dead Eye, and a Hitman-style disguise system for blending in and gathering information. The disguise system was tricky, since enemies had to react differently depending on whether they'd seen you before the disguise went on, which meant tracking per-enemy state across the whole level. Enemy AI had to be tuned to feel smart but not too smart, so the player still gets to sneak around and feel clever.
+
+There's also a full tools system for crafting and buying items before missions, plus a weather system and a day/night cycle.
+
+On hold — twice now, both times because of funding. It's the project I most want to finish, and the one that taught me the most, open world optimization especially. Still hoping to get back to it.`,
+      images: ["protop1i1.png", "protop1i2.png", "protop1i3.png", "protop1i4.png", "protop1i5.png", "protop1i6.png"],
       videos: [
         "https://m.youtube.com/watch?v=-HQApi7jA_Y",
         "https://youtu.be/woPbyepv4LM",
@@ -292,8 +245,10 @@ Working solo on something this size also meant running into the bigger challenge
       year: "",
       engine: "HTML / JavaScript — browser",
       short: "A 2D stealth platformer prototype built for the browser.",
-      description: `A 2D stealth platformer built with HTML for the browser. Building a game this way comes with its own set of problems compared to working in Unity: there's no built-in physics engine to lean on, so collision and movement have to be handled manually, input needs to work properly across keyboard and touch, and everything has to stay lightweight so it loads fast in a browser.`,
-      images: ["protop2i1.png"],
+      description: `A 2D stealth platformer built for the browser, part of the same ninja game world as Ninja Maker.
+
+I wrote collision and movement manually instead of pulling in an engine, and had to support both touch and keyboard input. Getting the game to fit and play correctly on both phone and desktop was the recurring headache on this one, same as with the word games.`,
+      images: ["protop2i1.png", "protop2i2.png", "protop2i3.png", "protop2i4.png", "protop2i5.png", "protop2i6.png"],
       videos: [],
       playLink: "",
       note: "Prototype — not publicly available to play."
@@ -309,7 +264,7 @@ Working solo on something this size also meant running into the bigger challenge
       engine: "Web platform",
       short: "A site teaching complete beginners the basics of C# for Unity.",
       description: `A platform built to teach absolute beginners the basics of C# for Unity development, starting from zero.`,
-      images: ["otherp1i1.png"],
+      images: ["otherp1i1.png", "otherp1i2.png", "otherp1i3.png", "otherp1i4.png", "otherp1i5.png", "otherp1i6.png"],
       videos: [],
       playLink: "",
       note: ""
@@ -320,8 +275,10 @@ Working solo on something this size also meant running into the bigger challenge
       year: "",
       engine: "Web platform",
       short: "A place for developers to showcase unfinished games and get support to revive them.",
-      description: `A site for developers to show off the dead or unfinished games they've worked on. Visitors can vote on which ones they'd like to see brought back, and help support them.`,
-      images: ["otherp2i1.png"],
+      description: `A platform for developers to show off dead or unfinished games they've worked on. Visitors can vote on which ones they'd like to see brought back and help support them.
+
+This needed real user accounts — sign up, login, profiles, and each user saving their own games. I used Firebase for authentication and user data instead of building auth from scratch.`,
+      images: ["otherp2i1.png", "otherp2i2.png", "otherp2i3.png", "otherp2i4.png", "otherp2i5.png", "otherp2i6.png"],
       videos: [],
       playLink: "",
       note: ""
