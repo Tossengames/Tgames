@@ -297,6 +297,18 @@ section.block{ padding:56px 0; border-bottom:5px solid var(--ink); }
 }
 .video-embed iframe{ width:100%; height:100%; border:0; }
 
+.detail-top-links{ margin:14px 0 10px; }
+.play-btn{
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--accent); color:#fff;
+  border:3px solid var(--ink);
+  padding:11px 22px; font-weight:bold; font-size:0.9rem;
+  text-decoration:none; text-transform:uppercase; letter-spacing:0.5px;
+  box-shadow: 4px 4px 0 rgba(10,10,10,0.9);
+  transition:transform .12s, box-shadow .12s;
+}
+.play-btn:hover{ transform:translate(-2px,-2px); box-shadow: 6px 6px 0 rgba(10,10,10,0.9); }
+.play-btn .icon{ font-size:1.05rem; line-height:1; }
 .detail-links{ margin-top:32px; display:flex; gap:14px; flex-wrap:wrap; }
 
 /* ==========================================================================
@@ -476,6 +488,7 @@ footer{ padding:30px 0; color:var(--bg-raised); font-size:0.85rem; background:va
       <a href="#projects" class="detail-back" onclick="goTo('projects')">&larr; Back to projects</a>
       <div class="detail-head">
         <h1 id="detailTitle"></h1>
+        <div class="detail-top-links" id="detailTopLinks"></div>
         <div class="meta" id="detailMeta"></div>
         <div class="note" id="detailNote" style="display:none;"></div>
       </div>
@@ -485,8 +498,6 @@ footer{ padding:30px 0; color:var(--bg-raised); font-size:0.85rem; background:va
       <div class="detail-desc" id="detailDesc"></div>
 
       <div class="detail-videos" id="detailVideos"></div>
-
-      <div class="detail-links" id="detailLinks"></div>
     </section>
   </div>
 </main>
@@ -631,6 +642,14 @@ function openProject(id){
   if(!p) return;
 
   document.getElementById("detailTitle").textContent = p.title;
+
+  const topLinksEl = document.getElementById("detailTopLinks");
+  if(p.playLink){
+    topLinksEl.innerHTML = `<a href="${p.playLink}" target="_blank" rel="noopener" class="play-btn"><span class="icon">&#9654;</span> Play on itch.io</a>`;
+  } else {
+    topLinksEl.innerHTML = "";
+  }
+
   document.getElementById("detailMeta").textContent = [p.engine, p.year].filter(Boolean).join(" — ");
 
   const noteEl = document.getElementById("detailNote");
@@ -672,13 +691,6 @@ function openProject(id){
   } else {
     videosEl.innerHTML = "";
   }
-
-  const linksEl = document.getElementById("detailLinks");
-  let linksHtml = "";
-  if(p.playLink){
-    linksHtml += `<a href="${p.playLink}" target="_blank" rel="noopener" class="btn btn-primary">Play / view project</a>`;
-  }
-  linksEl.innerHTML = linksHtml;
 
   goTo("detail");
   window.scrollTo(0,0);
