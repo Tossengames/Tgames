@@ -54,10 +54,9 @@
 const siteInfo = {
   name: "Tossen",
   title: "Unity Developer / C# Programmer",
-  tagline: "Solo Unity developer building stealth, action and puzzle games from the ground up.",
   email: "tossenpro@gmail.com",
 
-  /* Short bio shown right under the hero tagline on the homepage. */
+  /* Short bio shown under the hero name/role on the homepage. */
   heroBio: `Solo Unity developer with about a decade of experience building games from the first line of code to publishing. I have shipped several titles on Google Play and released prototypes on itch.io, handling everything myself: programming, gameplay systems, art, animation, sound, and optimization.
 
 I build for the lowest end device first. That habit started in 2016 when the only phone I had to test on was a weak one, and it never left.`,
