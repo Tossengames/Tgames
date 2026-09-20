@@ -10,7 +10,7 @@
    TOKENS — Poster palette (peachy orange / black / cream / white-on-orange)
    ========================================================================== */
 :root{
-  --bg:        #ffb98a;
+  --bg:        #ff8c42;
   --bg-raised: #f6f1e6;
   --ink:       #0a0a0a;
   --ink-soft:  #3a2f22;
@@ -53,11 +53,13 @@ header.site-header{
 }
 .nav{
   max-width:var(--maxw); margin:0 auto; padding:16px 24px;
-  display:flex; align-items:center; justify-content:space-between;
+  display:flex; align-items:center; justify-content:center;
+  position:relative;
 }
 .nav .brand{
   font-family:var(--serif); font-size:1.3rem; letter-spacing:-0.5px;
   text-decoration:none; color:var(--bg-raised);
+  position:absolute; left:24px;
 }
 .nav .brand em{
   font-style:normal; color:var(--accent);
@@ -78,6 +80,7 @@ header.site-header{
 }
 .nav-toggle{
   display:none; background:none; border:none; font-size:1.6rem; color:var(--bg-raised);
+  position:absolute; right:24px;
 }
 
 @media (max-width:640px){
@@ -129,6 +132,8 @@ header.site-header{
 .hero{
   padding:60px 0 50px;
   border-bottom:5px solid var(--ink);
+  text-align:center;
+  display:flex; flex-direction:column; align-items:center;
 }
 .availability-badge{
   display:inline-block; background:var(--ink); color:var(--accent);
@@ -156,17 +161,15 @@ header.site-header{
   margin-bottom:22px;
   text-transform:uppercase; letter-spacing:0.5px;
 }
-.hero .tagline{
-  max-width:58ch; color:var(--on-bg); font-size:1.05rem; font-weight:600;
-  text-shadow: 1px 1px 0 rgba(10,10,10,0.35);
-}
 .hero-bio{
   max-width:62ch; color:var(--on-bg); font-size:1rem; margin-top:22px;
   text-shadow: 1px 1px 0 rgba(10,10,10,0.35);
+  margin-left:auto; margin-right:auto;
 }
 .hero-bio p{ margin-bottom:1em; font-weight:600; }
 .hero-actions{
   display:flex; gap:14px; margin-top:26px; flex-wrap:wrap;
+  justify-content:center;
 }
 .btn{
   display:inline-flex; align-items:center; gap:8px;
@@ -316,6 +319,18 @@ section.block{ padding:56px 0; border-bottom:5px solid var(--ink); }
 /* ==========================================================================
    ABOUT PAGE — simplified, big CV button, no text dump
    ========================================================================== */
+.about-bio{
+  max-width:66ch; margin:0 auto; padding-top:60px;
+  text-align:center;
+}
+.about-bio h2{
+  font-size:1.9rem; color:var(--on-bg); text-shadow: 2px 2px 0 var(--ink); margin-bottom:20px;
+}
+.about-bio p{
+  font-size:1.05rem; color:var(--on-bg); font-weight:600; line-height:1.75;
+  text-align:left;
+  text-shadow: 1px 1px 0 rgba(10,10,10,0.35);
+}
 .about-cv-block{
   text-align:center; padding:70px 24px;
 }
@@ -390,7 +405,6 @@ footer{ padding:30px 0; color:var(--bg-raised); font-size:0.85rem; background:va
       <div class="availability-badge"><span class="dot"></span>Open to remote roles &amp; freelance work</div>
       <h1 id="heroName">Tossen</h1>
       <div class="role" id="heroRole">Unity Developer / C# Programmer</div>
-      <p class="tagline" id="heroTagline">Solo Unity developer building stealth, action and puzzle games from the ground up.</p>
       <div class="hero-bio" id="heroBio"></div>
       <div class="hero-actions">
         <a href="#projects" class="btn btn-primary" onclick="goTo('projects')">See the projects</a>
@@ -480,6 +494,10 @@ footer{ padding:30px 0; color:var(--bg-raised); font-size:0.85rem; background:va
 <!-- ============================== ABOUT ============================== -->
 <main id="page-about" class="page">
   <div class="wrap">
+    <section class="about-bio">
+      <h2>About me</h2>
+      <div id="aboutBioText"></div>
+    </section>
     <section class="about-cv-block">
       <h2>Resume / CV</h2>
       <p>Full experience, skills, and project history in one document.</p>
@@ -715,12 +733,12 @@ window.addEventListener("hashchange", handleHash);
 function init(){
   document.getElementById("heroName").textContent = siteInfo.name;
   document.getElementById("heroRole").textContent = siteInfo.title;
-  document.getElementById("heroTagline").textContent = siteInfo.tagline;
   document.title = siteInfo.name + " — " + siteInfo.title;
 
   if(siteInfo.heroBio){
-    document.getElementById("heroBio").innerHTML = siteInfo.heroBio
-      .split("\n\n").map(p=>`<p>${p}</p>`).join("");
+    const bioHtml = siteInfo.heroBio.split("\n\n").map(p=>`<p>${p}</p>`).join("");
+    document.getElementById("heroBio").innerHTML = bioHtml;
+    document.getElementById("aboutBioText").innerHTML = bioHtml;
   }
 
   const cvLinks = [
