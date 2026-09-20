@@ -14,7 +14,14 @@
    4. Upload your images to the "assets" folder on GitHub with the naming
       pattern used below (e.g. playstorep1i1.png, playstorep1i2.png ...).
    5. List those filenames in the "images" array, in the order you want them
-      to appear.
+      to appear. Each project supports up to 7 images — just list as many
+      as you actually have, in order.
+
+   IMPORTANT — FILE NAMES ARE CASE SENSITIVE ON GITHUB PAGES
+   -------------------------
+   "Playstorep1i1.PNG" is NOT the same file as "playstorep1i1.png" as far as
+   GitHub Pages is concerned. If images aren't showing, this is almost always
+   why. Keep everything lowercase, matching exactly what's written below.
 
    IMAGE FILE NAMING
    -------------------------
@@ -23,11 +30,14 @@
    assets/protop1i1.png       -> Unreleased prototype project 1, image 1
    assets/otherp1i1.png       -> Other project 1, image 1
    All images live flat inside one "assets" folder, no subfolders.
+   .png, .jpg, .jpeg and .gif all work — just make sure the extension you
+   write here matches the real file extension exactly.
 
    VIDEO LINKS
    -------------------------
-   Paste full YouTube links (any format, watch/youtu.be/m.youtube all work).
-   Leave the array empty [] if there's no video yet.
+   Paste full YouTube links (any format: watch/youtu.be/m.youtube/shorts all
+   work now). Leave the array empty [] if there's no video yet. Order in the
+   list = order shown on the page, first one shows first.
 
    PLAYABLE / EXTERNAL LINKS
    -------------------------
@@ -41,12 +51,72 @@
 const siteInfo = {
   name: "Tossen",
   title: "Unity Developer / C# Programmer",
-  tagline: "Solo Unity developer building stealth, action and puzzle games from the ground up.",
+  tagline: "C# programmer building games solo — third person and FPS titles in 3D, plus 2D games for mobile, PC and browser.",
   email: "tossenpro@gmail.com",
 
   /* CV placeholders - edit these whenever ready */
   cvPdfLink: "",           // e.g. "https://www.dropbox.com/.../resume.pdf" — leave "" to hide the download button
-  cvText: `Full CV text goes here. Replace this placeholder with your resume text whenever you're ready — it will show on the About page as readable text, separate from the PDF download.`
+
+  cvText: `TOSSEN
+Unity Developer / C# Programmer
+tossenpro@gmail.com | linkedin.com/in/tossen-pro-ab03871a9 | facebook.com/tossen.pro.3
+
+PROFILE
+Solo Unity developer with about a decade of experience building games completely on my own, from first line of code to publishing. Shipped several titles on Google Play and released a handful of prototypes on itch.io, covering programming, gameplay systems, optimization, art, sound, and monetization. Currently developing a third person stealth action game set in feudal Japan alongside other prototypes.
+
+SKILLS
+Code: C#, Unity (2D/3D), gameplay systems, enemy AI, player controllers, UI, physics, save systems, JSON data handling
+Art & Animation: 2D sprites/VFX, 3D modeling, rigging, animation, animator state machines
+Monetization: Unity Ads, AdMob integration
+Web: HTML, JavaScript (browser game development)
+Platforms: Android, PC, Web
+
+PUBLISHED GAMES — GOOGLE PLAY
+
+Color Math 3 — Unity/C# | 2016
+First published game, and the one I learned Unity and C# on while building it. A match and slice puzzle game where the player cuts through same colored objects, 3 up to 5 at once for higher scores. Implemented Unity Ads and AdMob, and spent a lot of time getting it to run smoothly on weak phones, since that's what I had at the time — a habit of optimizing for the lowest end device that stuck with me since. No AI tools existed yet, so I worked through nearly every common Unity error by hand.
+
+English Learning App — Unity/C# | 2018
+App that teaches English sentence structure. Gives the player a sentence in their own language plus a scrambled set of English words, and they put the words in the right order. Built the JSON based data handling in C#, including file reading and save state management.
+
+Color Matching — Unity/C# | 2022
+Open ended color mixing sandbox. Player gets a target color and a canvas with the base colors, with full freedom to mix and experiment until they match it.
+
+Soccer Match 3 — Unity/C#
+Match-3 game in the style of Candy Crush with a soccer theme. Player picks a team and works toward winning the cup.
+
+ITCH.IO PROTOTYPES / BROWSER GAMES
+
+Ninja Maker — Unity/C#, browser
+Third person stealth action game where players can build their own stages, levels, and stories, then share them with the community — a level editor approach to a stealth ninja game. On hold pending funding.
+
+Midnight Racer — Unity/C# | 2022
+Arcade style car combat and racing game for PC, inspired by Twisted Metal. Currently versus and racing modes against AI, with local and online multiplayer planned.
+
+This Is Sparta — Unity/C# | 2022
+Physics based combat game. Player controls a Spartan warrior kicking enemies through a stage full of hazards and weapons to maximize damage.
+
+Words Ring / Words Fall — HTML/JS, browser | 2024
+Two word formation puzzle games: one where players rotate a ring of letters like an old rotary phone dial, another where letters fall and players tap to form words before they land.
+
+UNRELEASED PROTOTYPES
+
+Seigi no Ha (Blade of Justice) — working title | Unity/C# | 2016–2018, unfinished
+Third person stealth action game set in 16th century feudal Japan, inspired by the Tenchu series. Two playable characters, a male and female shinobi, with a GTA V style character switch mechanic. Built a custom focus targeting system inspired by Red Dead Redemption 2's Dead Eye, and a Hitman-style disguise system for blending in to gather information. On hold twice due to lack of funding; still hoping to finish it.
+
+2D Ninja Platformer — HTML/JS, browser
+2D stealth platformer built for the browser, with manually handled collision and movement and cross-device input support.
+
+OTHER PROJECTS
+Orbit — site teaching complete beginners the basics of C# for Unity development.
+Game Graveyard — platform for developers to showcase unfinished or cancelled games, where visitors vote on which ones they'd like to see revived or supported.
+
+EXPERIENCE
+Independent Game Developer — 2016 – Present
+Solo full cycle development across every published title and prototype: programming, art, audio, VFX, optimization, and publishing.
+
+AVAILABILITY
+Open to remote roles and freelance work.`
 };
 
 
@@ -159,7 +229,7 @@ It's on hold right now until I can secure some funding to keep pushing it furthe
       description: `An arcade style car racing and fighting game for PC, inspired by the Twisted Metal series. The original idea had a story mode where you play through missions to save a city from an alien invasion, with local multiplayer and online play planned on top.
 
 That full vision isn't finished, so right now the playable prototype covers the versus and racing modes against AI. Lack of funding is what stopped it from going further, same story as a few of my other projects.`,
-      images: ["itchp2i1.png"],
+      images: ["itchp2i1.png", "itchp2i2.gif", "itchp2i3.gif"],
       videos: [],
       playLink: "https://millj.itch.io/midnightracer",
       note: ""
@@ -217,11 +287,10 @@ I had a lot more planned for this game, but between lack of support and funding 
 Working solo on something this size also meant running into the bigger challenges of 3D game development directly: modeling and rigging the two playable characters, building out animations and getting Unity's Animator state machines to blend between them properly, on top of writing enemy AI that could actually detect and react to a stealth player, and tuning the character controller itself to feel responsive.`,
       images: ["protop1i1.png", "protop1i2.png"],
       videos: [
+        "https://m.youtube.com/watch?v=-HQApi7jA_Y",
         "https://youtu.be/woPbyepv4LM",
         "https://m.youtube.com/watch?v=kxJ6qdd7wTM",
-        "https://m.youtube.com/watch?v=4s-ZDIWRiCw",
-        "https://m.youtube.com/watch?v=-HQApi7jA_Y",
-        "https://m.youtube.com/watch?v=uE2AS5c19kA"
+        "https://m.youtube.com/watch?v=4s-ZDIWRiCw"
       ],
       playLink: "",
       note: "Unfinished — not publicly available to play."
