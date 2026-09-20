@@ -14,8 +14,10 @@
    4. Upload your images to the "assets" folder on GitHub with the naming
       pattern used below (e.g. playstorep1i1.png, playstorep1i2.png ...).
    5. List those filenames in the "images" array, in the order you want them
-      to appear. Each project supports up to 7 images — just list as many
-      as you actually have, in order.
+      to appear. Each project supports up to 6 images — just list as many
+      as you actually have, in order. The detail page gallery automatically
+      shows every image you list here, so if you only have 2 today, add the
+      other filenames later and they'll show up with no other changes needed.
 
    IMPORTANT — FILE NAMES ARE CASE SENSITIVE ON GITHUB PAGES
    -------------------------
@@ -26,6 +28,8 @@
    IMAGE FILE NAMING
    -------------------------
    assets/playstorep1i1.png   -> Play Store project 1, image 1
+   assets/playstorep1i2.png   -> Play Store project 1, image 2
+   assets/playstorep1i3.png   -> Play Store project 1, image 3 (and so on, up to i6)
    assets/itchp1i1.png        -> Itch/prototype project 1, image 1
    assets/protop1i1.png       -> Unreleased prototype project 1, image 1
    assets/otherp1i1.png       -> Other project 1, image 1
@@ -55,7 +59,7 @@ const siteInfo = {
   email: "tossenpro@gmail.com",
 
   /* CV placeholders - edit these whenever ready */
-  cvPdfLink: "",           // e.g. "https://www.dropbox.com/.../resume.pdf" — leave "" to hide the download button
+  cvPdfLink: "",           // e.g. "https://www.dropbox.com/.../resume.pdf" — leave "" to show a "coming soon" note instead of the download button
 
   cvText: `TOSSEN
 Unity Developer / C# Programmer
@@ -75,9 +79,6 @@ PUBLISHED GAMES — GOOGLE PLAY
 
 Color Math 3 — Unity/C# | 2016
 First published game, and the one I learned Unity and C# on while building it. A match and slice puzzle game where the player cuts through same colored objects, 3 up to 5 at once for higher scores. Implemented Unity Ads and AdMob, and spent a lot of time getting it to run smoothly on weak phones, since that's what I had at the time — a habit of optimizing for the lowest end device that stuck with me since. No AI tools existed yet, so I worked through nearly every common Unity error by hand.
-
-English Learning App — Unity/C# | 2018
-App that teaches English sentence structure. Gives the player a sentence in their own language plus a scrambled set of English words, and they put the words in the right order. Built the JSON based data handling in C#, including file reading and save state management.
 
 Color Matching — Unity/C# | 2022
 Open ended color mixing sandbox. Player gets a target color and a canvas with the base colors, with full freedom to mix and experiment until they match it.
@@ -159,22 +160,10 @@ const projects = {
 I implemented Unity Ads and AdMob myself, and spent a lot of time just getting it to run smoothly on weak phones, since that's what I had to test on at the time. That habit of optimizing for the lowest end device stuck with me ever since.
 
 There was no AI to help back then, so I worked through pretty much every common Unity error the hard way, over days sometimes. By the time it was published I'd learned a huge amount, not just about programming but about 2D art, VFX, SFX and music too, since I was doing all of it solo. Then I learned the other lesson every indie dev learns eventually: building the game is maybe 30% of the work. Getting people to actually find it and download it is the hard part.`,
+      // Add more filenames here as you have them — up to 6 total, e.g.:
+      // images: ["playstorep1i1.png", "playstorep1i2.png", "playstorep1i3.png", "playstorep1i4.png"],
       images: ["playstorep1i1.png", "playstorep1i2.png"],
       videos: ["https://youtu.be/_cSJ45uymVw"],
-      playLink: "",
-      note: "No longer live on the Play Store."
-    },
-    {
-      id: "playstorep2",
-      title: "English Learning App",
-      year: "2018",
-      engine: "Unity / C#",
-      short: "An app that teaches English sentence structure through word puzzles.",
-      description: `A learning app that teaches how to form English sentences. It gives the player a sentence in their own language along with a scrambled set of English words, and the player has to arrange the words correctly to match it.
-
-This project is where I really got comfortable with JSON and string handling in C#, reading data in, managing it, and saving progress.`,
-      images: ["playstorep2i1.png"],
-      videos: [],
       playLink: "",
       note: "No longer live on the Play Store."
     },
@@ -229,6 +218,7 @@ It's on hold right now until I can secure some funding to keep pushing it furthe
       description: `An arcade style car racing and fighting game for PC, inspired by the Twisted Metal series. The original idea had a story mode where you play through missions to save a city from an alien invasion, with local multiplayer and online play planned on top.
 
 That full vision isn't finished, so right now the playable prototype covers the versus and racing modes against AI. Lack of funding is what stopped it from going further, same story as a few of my other projects.`,
+      // Add more filenames here as you have them — up to 6 total.
       images: ["itchp2i1.png", "itchp2i2.gif", "itchp2i3.gif"],
       videos: [],
       playLink: "https://millj.itch.io/midnightracer",
@@ -285,6 +275,7 @@ That full vision isn't finished, so right now the playable prototype covers the 
 I had a lot more planned for this game, but between lack of support and funding I had to let it go. It started back in 2016, I picked it up again around 2018, then had to shelve it again. I'd love to bring it back and actually finish it if I could get the help and funding it needs.
 
 Working solo on something this size also meant running into the bigger challenges of 3D game development directly: modeling and rigging the two playable characters, building out animations and getting Unity's Animator state machines to blend between them properly, on top of writing enemy AI that could actually detect and react to a stealth player, and tuning the character controller itself to feel responsive.`,
+      // Add more filenames here as you have them — up to 6 total.
       images: ["protop1i1.png", "protop1i2.png"],
       videos: [
         "https://m.youtube.com/watch?v=-HQApi7jA_Y",
